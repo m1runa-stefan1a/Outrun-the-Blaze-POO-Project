@@ -71,6 +71,10 @@ target_sources(${MAIN_LIBRARY_NAME}
     PRIVATE
         src/Example.cpp
         src/internal/Detail.cpp
+        src/Direction.cpp
+        src/HexCoord.cpp
+        src/WaterPayload.cpp
+        src/WindConditions.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

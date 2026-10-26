@@ -1,12 +1,9 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Outrun the Blaze
 
-### Folosiți template-ul corespunzător grupei voastre!
-
-| Laborant  | Link template                                |
-|-----------|----------------------------------------------|
-| Dragoș B  | https://github.com/Ionnier/oop-template      |
-| Tiberiu M | https://github.com/MaximTiberiu/oop-template |
-| Marius MC | https://github.com/mcmarius/oop-template     |
+Simulator interactiv de dispecerat aerian pentru intervenții la incendii de pădure.
+Utilizatorul coordonează o flotă de aeronave pe o hartă hexagonală: le trimite la lac
+pentru alimentare și lansează apă sau retardant peste focare, în timp ce focul se
+extinde în funcție de vânt și de umiditatea pădurii.
 
 ### Important!
 
@@ -33,8 +30,8 @@ O cerință nu se consideră îndeplinită dacă este realizată doar prin cod g
 
 ### Tema 0
 
-- [ ] Nume proiect (poate fi schimbat ulterior)
-- [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
+- [x] Nume proiect (poate fi schimbat ulterior)
+- [x] Scurtă descriere a temei alese, ce v-ați propus să implementați
 
 ## Tema 1
 
@@ -205,5 +202,4 @@ The project is licensed under [AGPLv3](LICENSE).
 The [template repository](https://github.com/mcmarius/oop-template) itself is licensed under [Unlicense](LICENSE.template).
 
 ## Resurse
-
-- adăugați trimiteri **detaliate** către resursele externe care v-au ajutat sau pe care le-ați folosit
+- [Hexagonal Grids — Red Blob Games](https://www.redblobgames.com/grids/hexagons/), secțiunea „Offset coordinates": tabelele de vecini din `src/HexCoord.cpp`
