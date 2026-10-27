@@ -36,7 +36,7 @@ int WaterPayload::fillPercent() const {
     return current_ * 100 / capacity_;
 }
 
-std::ostream &operator<<(std::ostream &os, WaterPayload &payload) {
+std::ostream &operator<<(std::ostream &os, const WaterPayload &payload) {
     os << payload.current_ << '/' << payload.capacity_<< "L ("<<payload.fillPercent()<<"%)";
     return os;
 }

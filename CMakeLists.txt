@@ -75,6 +75,7 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/HexCoord.cpp
         src/WaterPayload.cpp
         src/WindConditions.cpp
+        src/AirTanker.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

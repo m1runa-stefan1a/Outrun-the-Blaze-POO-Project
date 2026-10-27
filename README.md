@@ -202,4 +202,4 @@ The project is licensed under [AGPLv3](LICENSE).
 The [template repository](https://github.com/mcmarius/oop-template) itself is licensed under [Unlicense](LICENSE.template).
 
 ## Resurse
-- [Hexagonal Grids — Red Blob Games](https://www.redblobgames.com/grids/hexagons/), secțiunea „Offset coordinates": tabelele de vecini din `src/HexCoord.cpp`
+- [Hexagonal Grids — Red Blob Games](https://www.redblobgames.com/grids/hexagons/), secțiunile „Offset coordinates" și „Distances": tabelele de vecini și calculul distanței din `src/HexCoord.cpp`
