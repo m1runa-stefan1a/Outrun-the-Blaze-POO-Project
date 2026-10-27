@@ -76,6 +76,8 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/WaterPayload.cpp
         src/WindConditions.cpp
         src/AirTanker.cpp
+        src/WildfireSector.cpp
+        src/ForestMap.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

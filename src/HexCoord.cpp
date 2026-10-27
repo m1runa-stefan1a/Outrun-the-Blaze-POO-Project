@@ -15,9 +15,6 @@ constexpr std::array<Step, 6> oddRowSteps{{
         {0, +1}, {-1, +1}, {-1, 0}, {0, -1}, {+1, 0}, {+1, +1}
 }};
 }
-constexpr std::array<Direction, 6> allDirections{
-    Direction::East, Direction::NorthEast, Direction::NorthWest, Direction::SouthEast, Direction::SouthWest, Direction::West
-};
 
 HexCoord::HexCoord(int row, int col) : row_{row}, col_{col} {}
 

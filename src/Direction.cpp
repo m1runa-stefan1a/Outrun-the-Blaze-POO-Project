@@ -1,5 +1,9 @@
 #include "Direction.h"
 
+Direction oposite(Direction direction) {
+    const auto index = static_cast<std::size_t>(direction);
+    return allDirections[(index+3)%allDirections.size()];
+}
 std::ostream& operator<<(std::ostream& os, Direction direction) {
     switch (direction) {
         case Direction::East:      os << "E";  break;
