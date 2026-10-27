@@ -1,7 +1,7 @@
 #ifndef HEX_COORD_H
 #define HEX_COORD_H
 #include <ostream>
-
+#include <cstddef>
 #include "Direction.h"
 
 
@@ -15,7 +15,8 @@ class HexCoord {
         int distanceTo(const HexCoord& other) const;
         HexCoord stepTowards(const HexCoord& target) const;
         bool isInside(int rowCount, int colCount) const;
-        bool operator==(const HexCoord& coord) const;
+        std::size_t indexIn(int colCount) const;
+        bool operator==(const HexCoord& other) const;
         friend std::ostream& operator<<(std::ostream& os, const HexCoord& coord);
 };
 #endif

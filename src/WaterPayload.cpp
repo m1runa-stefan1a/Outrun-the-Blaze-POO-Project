@@ -20,7 +20,7 @@ int WaterPayload::release(int requested) {
         throw std::invalid_argument("WaterPayload: quantity must be non-negative");
     }
     const int released = std::min(requested, current_);
-    current_ = released;
+    current_ -= released;
     return released;
 }
 

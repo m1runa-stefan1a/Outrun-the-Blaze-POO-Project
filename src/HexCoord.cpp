@@ -1,5 +1,5 @@
 #include "HexCoord.h"
-
+#include <cstdlib>
 #include <array>
 #include <cstddef>
 
@@ -8,16 +8,15 @@ namespace {
         int dRow;
         int dCol;
     };
-}
 constexpr std::array<Step, 6> evenRowSteps{{
         {0, +1}, {-1, 0}, {-1, -1}, {0, -1}, {+1, -1}, {+1, 0}
 }};
 constexpr std::array<Step, 6> oddRowSteps{{
         {0, +1}, {-1, +1}, {-1, 0}, {0, -1}, {+1, 0}, {+1, +1}
 }};
-
+}
 constexpr std::array<Direction, 6> allDirections{
-    Direction::East, Direction::NorthEast, Direction::NorthWest, Direction::SouthEast, Direction::SouthWest
+    Direction::East, Direction::NorthEast, Direction::NorthWest, Direction::SouthEast, Direction::SouthWest, Direction::West
 };
 
 HexCoord::HexCoord(int row, int col) : row_{row}, col_{col} {}
@@ -25,7 +24,7 @@ HexCoord::HexCoord(int row, int col) : row_{row}, col_{col} {}
 HexCoord HexCoord::neighbour(Direction direction) const {
     const auto index = static_cast<std::size_t>(direction);
     const bool oddRow = (row_ % 2) != 0;
-    const Step step = oddRow ? evenRowSteps[index] : oddRowSteps[index];
+    const Step step = oddRow ? oddRowSteps[index] : evenRowSteps[index];
     return HexCoord{row_ + step.dRow, col_ + step.dCol};
 }
 
@@ -39,7 +38,7 @@ int HexCoord::distanceTo(const HexCoord& other) const {
 }
 HexCoord HexCoord::stepTowards(const HexCoord& target) const {
     HexCoord best = *this;
-    int bestDistance = distanceTo(best);
+    int bestDistance = distanceTo(target);
     for (const Direction direction : allDirections) {
         const HexCoord candidate = neighbour(direction);
         const int candidateDistance = candidate.distanceTo(target);
@@ -50,7 +49,9 @@ HexCoord HexCoord::stepTowards(const HexCoord& target) const {
     }
     return best;
 }
-
+std::size_t HexCoord::indexIn(int colCount) const {
+    return static_cast<std::size_t>(row_)*static_cast<std::size_t>(colCount)+static_cast<std::size_t>(col_);
+}
 bool HexCoord::isInside(int rowCount, int colCount) const {
     return row_ >= 0 && row_ < rowCount && col_ >= 0 && col_ < colCount;
 }
