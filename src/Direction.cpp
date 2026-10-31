@@ -1,6 +1,6 @@
 #include "Direction.h"
 
-Direction oposite(Direction direction) {
+Direction opposite(Direction direction) {
     const auto index = static_cast<std::size_t>(direction);
     return allDirections[(index+3)%allDirections.size()];
 }
