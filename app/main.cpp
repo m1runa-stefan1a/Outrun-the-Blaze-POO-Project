@@ -1,27 +1,52 @@
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <limits>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "Mission.h"
 
+#include <json/json.hpp>
+
 namespace {
     enum class Input { Available, Ended };
-    Mission buildMission() {
-        const ForestMap map{{"PPPPPPPPPP",
-                         "PPPPPPPPPP",
-                         "PPLLPPPPPP",
-                         "PPPPPPPPPP",
-                         "PPPPPPPPCP",
-                         "PPPPPPPPPP"}, 60};
-        const AirOpsDispatcher dispatcher{{AirTanker{"Dipper", 3000, 60, HexCoord{3, 1}},
-                                       AirTanker{"Cabbie", 1500, 30, HexCoord{3, 1}}},
-                                      1500, 1000};
-        return Mission{"Lacul Linistit", WindConditions{Direction::East, 35}, map, dispatcher,
-                       {HexCoord{2, 5}}, 30};
+    Direction directionFromText(const std::string& text) {
+        for (const Direction direction : allDirections) {
+            std::ostringstream name;
+            name << direction;
+            if (name.str() == text) {
+                return direction;
+            }
+        }
+        throw std::runtime_error("unknown wind direction: "+text);
     }
+    Mission loadMission(const std::string& path) {
+        std::ifstream file{path};
+        if (!file) {
+            throw std::runtime_error("cannot open file: "+path);
+        }
+        const nlohmann::json data= nlohmann::json::parse(file);
+        const ForestMap map{
+            data.at("map").get<std::vector<std::string>>(),
+            data.at("humidityPercent").get<int>()};
+        std::vector<AirTanker> fleet;
+        for (const nlohmann::json& tanker:data.at("tankers")) {
+            fleet.emplace_back(tanker.at("name").get<std::string>(), tanker.at("capacity").get<int>(),
+                               tanker.at("maxWindKmh").get<int>(),
+                               HexCoord{tanker.at("row").get<int>(), tanker.at("col").get<int>()});
+        }
+        const AirOpsDispatcher dispatcher{fleet, data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
+        const WindConditions wind{directionFromText(data.at("windDirection").get<std::string>()),data.at("windSpeedKmh").get<int>()};
+        std::vector<HexCoord> fires;
+        for (const nlohmann::json& fire : data.at("fires")) {
+            fires.emplace_back(fire.at("row").get<int>(), fire.at("col").get<int>());
+        }
+        return Mission{data.at("name").get<std::string>(), wind, map, dispatcher, fires, data.at("timeLimit").get<int>()};
+    }
+
 
 void skipLine() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -112,10 +137,15 @@ bool askRetry() {
 }
 }
 int main() {
-    const Mission initial = buildMission();
-    Mission attempt{initial};
-    while (play(attempt)==Input::Available && askRetry()) {
-        attempt = initial;
+    try {
+        const Mission initial = loadMission("assets/missions.json");
+        Mission attempt{initial};
+        while (play(attempt) == Input::Available && askRetry()) {
+            attempt = initial;
+        }
+    } catch (const std::exception& error) {
+        std::cout << "Nu pot incarca misiunea: " << error.what() << '\n';
+        return 1;
     }
     std::cout<<"End.\n";
     return 0;

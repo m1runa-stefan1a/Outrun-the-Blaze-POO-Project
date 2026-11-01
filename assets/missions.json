@@ -1,0 +1,24 @@
+{
+  "name": "Lacul Linistit",
+  "timeLimit": 30,
+  "windDirection": "E",
+  "windSpeedKmh": 35,
+  "humidityPercent": 60,
+  "map": [
+    "PPPPPPPPPP",
+    "PPPPPPPPPP",
+    "PPLLPPPPPP",
+    "PPPPPPPPPP",
+    "PPPPPPPPCP",
+    "PPPPPPPPPP"
+  ],
+  "refillPerStep": 1500,
+  "dropPerStep": 1000,
+  "tankers": [
+    { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 3, "col": 1 },
+    { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 30, "row": 3, "col": 1 }
+  ],
+  "fires": [
+    { "row": 2, "col": 5 }
+  ]
+}

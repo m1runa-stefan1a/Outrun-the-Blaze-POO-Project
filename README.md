@@ -203,3 +203,4 @@ The [template repository](https://github.com/mcmarius/oop-template) itself is li
 
 ## Resurse
 - [Hexagonal Grids — Red Blob Games](https://www.redblobgames.com/grids/hexagons/), secțiunile „Offset coordinates" și „Distances": tabelele de vecini și calculul distanței din `src/HexCoord.cpp`
+- [nlohmann/json](https://github.com/nlohmann/json) v3.12.0 (licență MIT, în `ext/include/json/`): citirea datelor misiunii din `assets/missions.json`
