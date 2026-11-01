@@ -28,7 +28,7 @@ ForestMap::ForestMap(const std::vector<std::string>& layout, int humidityPercent
     :rowCount_{static_cast<int>(layout.size())},
     colCount_{layout.empty()?0:static_cast<int>(layout.front().size())},
     humidityPercent_{humidityPercent} {
-    if (rowCount_ == 0 && colCount_ == 0) {
+    if (rowCount_ == 0 || colCount_ == 0) {
         throw std::invalid_argument("ForestMap: empty map");
     }
     if (humidityPercent_ <0 || humidityPercent > 100) {
@@ -36,7 +36,7 @@ ForestMap::ForestMap(const std::vector<std::string>& layout, int humidityPercent
     }
     for (int row =0; row < rowCount_; ++row) {
         const std::string& line = layout[static_cast<std::size_t>(row)];
-        if (static_cast<std::size_t>(line.size()) != colCount_) {
+        if (static_cast<int>(line.size()) != colCount_) {
             throw std::invalid_argument("ForestMap: invalid map layout");
         }
         for (int col = 0; col<colCount_; ++col) {
@@ -47,6 +47,11 @@ ForestMap::ForestMap(const std::vector<std::string>& layout, int humidityPercent
 void ForestMap::ignite(const HexCoord& where) {
     sectors_[indexOf(where)].ignite();
 }
+
+bool ForestMap::contains(const HexCoord &where) const {
+    return where.isInside(rowCount_, colCount_);
+}
+
 void ForestMap::spreadFire(const WindConditions& wind) {
     std::vector<int> incoming(sectors_.size(),0);
     for ( const WildfireSector& sector : sectors_) {
@@ -75,7 +80,13 @@ void ForestMap::douse(const HexCoord& where, int liters) {
 bool ForestMap::isLake(const HexCoord& where) const {
     return sectors_[indexOf(where)].isLake();
 }
-
+bool ForestMap::isBurning(const HexCoord& where) const {
+    return sectors_[indexOf(where)].isBurning();
+}
+bool ForestMap::hasActiveFire() const {
+    return std::any_of(sectors_.begin(), sectors_.end(),
+        [](const WildfireSector& sector) { return sector.isBurning(); });
+}
 int ForestMap::lostPercent() const {
     const auto burnable = std::count_if(sectors_.begin(), sectors_.end(),
         [](const WildfireSector& sector) { return !sector.isLake(); });
@@ -83,7 +94,7 @@ int ForestMap::lostPercent() const {
         return 0;
     }
     const auto lost = std::count_if(sectors_.begin(), sectors_.end(),
-        [](const WildfireSector& sector) { return !sector.isLost(); });
+        [](const WildfireSector& sector) { return sector.isLost(); });
     return static_cast<int>(lost*100/burnable);
 }
 
@@ -93,7 +104,7 @@ bool ForestMap::isCabinLost() const {
 }
 
 std::size_t ForestMap::indexOf(const HexCoord& where) const {
-    if (!where.isInside(rowCount_, colCount_)) {
+    if (!contains(where)) {
         throw std::out_of_range("ForestMap: position is not on the map");
     }
     return where.indexIn(colCount_);
@@ -113,6 +124,6 @@ std::ostream& operator<<(std::ostream& os, const ForestMap& map) {
         }
         os << map.sectors_[i]<<' ';
     }
-    os << "\humidity"<<map.humidityPercent_<<"%, lost"<< map.lostPercent()<<"%";
+    os << "\nhumidity"<<map.humidityPercent_<<"%, lost"<< map.lostPercent()<<"%";
     return os;
 }

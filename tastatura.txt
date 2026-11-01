@@ -1,2 +1,12 @@
-5
-11 22 33 44 55
+wait 20
+maybe
+y
+fly 1 2
+send 7 2 3
+send 0 9 9
+send 0 2 3
+send 1 2 2
+wait 3
+send 0 2 5
+wait 5
+n

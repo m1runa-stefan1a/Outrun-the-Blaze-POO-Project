@@ -78,6 +78,8 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/AirTanker.cpp
         src/WildfireSector.cpp
         src/ForestMap.cpp
+        src/AirOpsDispatcher.cpp
+        src/Mission.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

@@ -15,6 +15,9 @@ public:
     void advance(const WindConditions& wind);
     bool canFlyIn(const WindConditions& wind) const;
     bool hasArrived() const;
+    bool isOnStation() const;
+    bool hasWater() const;
+    bool isTankFull() const;
     const HexCoord& position() const;
     void refill(int portion);
     int dropWater(int requested);

@@ -4,8 +4,8 @@
 
 namespace {
     constexpr int ignitionHeat = 100;
-    constexpr int startIntensity = 25;
-    constexpr int intensityGrowth = 25;
+    constexpr int startIntensity = 10;
+    constexpr int intensityGrowth = 10;
     constexpr int maxIntensity = 100;
     constexpr int litersPerIntensityPoint =20;
 }
@@ -28,7 +28,7 @@ void WildfireSector::addHeat(int amount) {
 void WildfireSector::advanceFire() {
     switch (state_) {
         case State::Intact:
-            if (canIgnite()&&heat_>ignitionHeat) {
+            if (canIgnite()&&heat_>=ignitionHeat) {
                 ignite();
             }
             break;
@@ -51,7 +51,7 @@ void WildfireSector::douse(int liters) {
     if (state_!=State::Burning) {
         return;
     }
-    intensity_-=liters;
+    intensity_-=liters/litersPerIntensityPoint;
     if (intensity_<=0) {
         state_=State::Intact;
         intensity_= 0;
@@ -59,13 +59,16 @@ void WildfireSector::douse(int liters) {
     }
 }
 int WildfireSector::heatOutput(int humidityPercent) const {
-    if (state_==State::Burning) {
+    if (state_!=State::Burning) {
         return 0;
     }
     return intensity_ *(100-humidityPercent)/100;
 }
 bool WildfireSector::isLost() const {
     return state_ != State::Intact;
+}
+bool WildfireSector::isBurning() const {
+    return state_ == State::Burning;
 }
 bool WildfireSector::isLake() const {
     return terrain_==Terrain::Lake;

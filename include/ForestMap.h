@@ -13,9 +13,12 @@ class ForestMap {
 public:
     ForestMap(const std::vector<std::string>& layout, int HumidityPercent);
     void ignite(const HexCoord& where);
+    bool contains(const HexCoord& where) const;
     void spreadFire(const WindConditions& wind);
     void douse(const HexCoord& where, int liters);
     bool isLake(const HexCoord& where) const;
+    bool isBurning(const HexCoord& where) const;
+    bool hasActiveFire() const;
     int lostPercent() const;
     bool isCabinLost() const;
     friend std::ostream& operator<<(std::ostream& os, const ForestMap& map);

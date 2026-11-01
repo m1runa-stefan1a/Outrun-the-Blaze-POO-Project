@@ -13,6 +13,7 @@ public:
     void douse(int liters);
     int heatOutput(int humidityPercent) const;
     bool isLost() const;
+    bool isBurning() const;
     bool isLake() const;
     bool isCabin() const;
     const HexCoord& position() const;

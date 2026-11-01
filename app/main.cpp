@@ -1,54 +1,122 @@
+#include <cstddef>
 #include <iostream>
-#include <array>
-#include "Example.h"
+#include <limits>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
+#include "Mission.h"
+
+namespace {
+    enum class Input { Available, Ended };
+    Mission buildMission() {
+        const ForestMap map{{"PPPPPPPPPP",
+                         "PPPPPPPPPP",
+                         "PPLLPPPPPP",
+                         "PPPPPPPPPP",
+                         "PPPPPPPPCP",
+                         "PPPPPPPPPP"}, 60};
+        const AirOpsDispatcher dispatcher{{AirTanker{"Dipper", 3000, 60, HexCoord{3, 1}},
+                                       AirTanker{"Cabbie", 1500, 30, HexCoord{3, 1}}},
+                                      1500, 1000};
+        return Mission{"Lacul Linistit", WindConditions{Direction::East, 35}, map, dispatcher,
+                       {HexCoord{2, 5}}, 30};
+    }
+
+void skipLine() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+Input readDispatch(Mission& mission) {
+    std::size_t tanker =0;
+    int row=0;
+    int col=0;
+    if (!(std::cin >> tanker >> row >> col)) {
+        if (std::cin.eof()) {
+            return Input::Ended;
+        }
+        std::cin.clear();
+        skipLine();
+        std::cout <<"Format: send <palne> <row> <col>\n";
+        return Input::Available;
+    }
+    const HexCoord target{row, col};
+    try {
+        mission.dispatch(tanker, target);
+        std::cout<<"Aeronava " << tanker << " pleaca spre " << target << '\n';
+    } catch (const std::out_of_range& error) {
+        std::cout << "Comanda invalida: " << error.what() << '\n';
+    }
+    return Input::Available;
+
+}
+
+Input readWait(Mission& mission) {
+    int steps = 0;
+    if (!(std::cin >> steps)) {
+        if (std::cin.eof()) {
+            return Input::Ended;
+        }
+        std::cin.clear();
+        skipLine();
+        std::cout<< "Format: wait <steps>\n";
+        return Input::Available;
+    }
+    if (steps < 1) {
+        std::cout<<"the number of steps must be greater than 0.\n";
+        return Input::Available;
+    }
+    for (int i=0; i<steps && mission.status()==Mission::Status::InProgress; ++i) {
+        mission.advance();
+    }
+    std::cout<<mission<<'\n';
+    return Input::Available;
+}
+Input play(Mission& mission) {
+    std::cout<<mission<<'\n';
+    while (mission.status()==Mission::Status::InProgress) {
+        std::cout<<"command: send <palne> <row> <col> | wait <steps> :\n";
+        std::string command;
+        if (!(std::cin >> command)) {
+            return Input::Ended;
+        }
+        Input input=Input::Available;
+        if (command == "send") {
+            input=readDispatch(mission);
+        } else if (command == "wait") {
+            input=readWait(mission);
+        } else {
+            skipLine();
+            std::cout<<"unknown command\n"<<command<<'\n';
+        }
+        if (input == Input::Ended) {
+            return Input::Ended;
+        }
+    }
+    return Input::Available;
+}
+bool askRetry() {
+    std::string answer;
+    while (true) {
+        std::cout<<"Do you want to retry? (y/n) ";
+        if (!(std::cin >> answer)) {
+            return false;
+        }
+        if (answer == "y") {
+            return true;
+        }
+        if (answer == "n") {
+            return false;
+        }
+        std::cout<<"respond with y/n";
+    }
+}
+}
 int main() {
-    std::cout << "Hello, world!\n";
-    Example e1;
-    e1.add(3);
-    e1.g();
-    std::array<int, 100> v{};
-    int nr;
-    std::cout << "Introduceți nr: ";
-    /////////////////////////////////////////////////////////////////////////
-    /// Observație: dacă aveți nevoie să citiți date de intrare de la tastatură,
-    /// dați exemple de date de intrare folosind fișierul tastatura.txt
-    /// Trebuie să aveți în fișierul tastatura.txt suficiente date de intrare
-    /// (în formatul impus de voi) astfel încât execuția programului să se încheie.
-    /// De asemenea, trebuie să adăugați în acest fișier date de intrare
-    /// pentru cât mai multe ramuri de execuție.
-    /// Dorim să facem acest lucru pentru a automatiza testarea codului, fără să
-    /// mai pierdem timp de fiecare dată să introducem de la zero aceleași date de intrare.
-    ///
-    /// Pe GitHub Actions (bife), fișierul tastatura.txt este folosit
-    /// pentru a simula date introduse de la tastatură.
-    /// Bifele verifică dacă programul are erori de compilare, erori de memorie și memory leaks.
-    ///
-    /// Dacă nu puneți în tastatura.txt suficiente date de intrare, îmi rezerv dreptul să vă
-    /// testez codul cu ce date de intrare am chef și să nu pun notă dacă găsesc vreun bug.
-    /// Impun această cerință ca să învățați să faceți un demo și să arătați părțile din
-    /// program care merg (și să le evitați pe cele care nu merg).
-    ///
-    /////////////////////////////////////////////////////////////////////////
-    std::cin >> nr;
-    /////////////////////////////////////////////////////////////////////////
-    for(int i = 0; i < nr; ++i) {
-        std::cout << "v[" << i << "] = ";
-        std::cin >> v[i];
+    const Mission initial = buildMission();
+    Mission attempt{initial};
+    while (play(attempt)==Input::Available && askRetry()) {
+        attempt = initial;
     }
-    std::cout << "\n\n";
-    std::cout << "Am citit de la tastatură " << nr << " elemente:\n";
-    for(int i = 0; i < nr; ++i) {
-        std::cout << "- " << v[i] << "\n";
-    }
-    ///////////////////////////////////////////////////////////////////////////
-    /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
-    /// alt fișier propriu cu ce alt nume doriți.
-    /// Exemplu:
-    /// std::ifstream fis("date.txt");
-    /// for(int i = 0; i < nr2; ++i)
-    ///     fis >> v2[i];
-    ///
-    ///////////////////////////////////////////////////////////////////////////
+    std::cout<<"End.\n";
     return 0;
 }

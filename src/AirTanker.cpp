@@ -46,6 +46,16 @@ bool AirTanker::canFlyIn(const WindConditions& wind) const {
 bool AirTanker::hasArrived() const {
     return position_ == destination_;
 }
+bool AirTanker::isOnStation() const {
+    return hasArrived() && !isAtBase();
+}
+
+bool AirTanker::hasWater() const {
+    return !payload_.isEmpty();
+}
+bool AirTanker::isTankFull() const {
+    return payload_.isFull();
+}
 const HexCoord& AirTanker::position() const {
     return position_;
 }
@@ -63,7 +73,7 @@ bool AirTanker::isAtBase() const {
     return position_ == base_;
 }
 void AirTanker::requireOnStation(const char* action) const {
-    if (!hasArrived()||isAtBase()) {
+    if (!isOnStation()) {
     throw std::logic_error(name_ + " can't " + action + ": not above the target");
     }
 }
