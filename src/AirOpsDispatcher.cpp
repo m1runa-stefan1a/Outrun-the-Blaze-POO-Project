@@ -16,10 +16,18 @@ void AirOpsDispatcher::dispatch(std::size_t tankerIndex, const HexCoord& target,
     if (!map.contains(target)) {
         throw std::out_of_range("AirOpsDispatcher: target does not exist");    }
     if (tankerIndex >= fleet_.size()) {
-        throw std::out_of_range("AirOpsDispatcher: nu exista aeronava cu acest numar");
+        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
     }
     fleet_[tankerIndex].sendTo(target);
 }
+
+void AirOpsDispatcher::recall(std::size_t tankerIndex) {
+    if (tankerIndex >= fleet_.size()) {
+        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
+    }
+    fleet_[tankerIndex].returnToBase();
+}
+
 void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
     for (AirTanker& tanker : fleet_) {
         tanker.advance(wind);
@@ -41,7 +49,7 @@ void AirOpsDispatcher::workOnStation(AirTanker& tanker, ForestMap& map) const {
     }
 }
 std::ostream& operator<<(std::ostream& os, const AirOpsDispatcher& dispatcher) {
-    os<< "fleet("<< dispatcher.fleet_.size() << " aeronave): ";
+    os<< "fleet("<< dispatcher.fleet_.size() << " aircraft): ";
     for (std::size_t i = 0; i < dispatcher.fleet_.size(); ++i) {
         os << "\n "<<i<<". "<<dispatcher.fleet_[i];
     }

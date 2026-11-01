@@ -67,14 +67,32 @@ Input readDispatch(Mission& mission) {
     const HexCoord target{row, col};
     try {
         mission.dispatch(tanker, target);
-        std::cout<<"Aeronava " << tanker << " pleaca spre " << target << '\n';
-    } catch (const std::out_of_range& error) {
-        std::cout << "Comanda invalida: " << error.what() << '\n';
+        std::cout<<"Aircraft " << tanker << " heading to " << target << '\n';
+    } catch (const std::logic_error& error) {
+        std::cout << "Invalid command: " << error.what() << '\n';
     }
     return Input::Available;
 
 }
-
+Input readRecall(Mission& mission) {
+        std::size_t tanker =0;
+        if (!(std::cin>>tanker)) {
+            if (std::cin.eof()) {
+                return Input::Ended;
+            }
+            std::cin.clear();
+            skipLine();
+            std::cout<<"Format: recall <airplane>\n";
+            return Input::Available;
+        }
+        try {
+            mission.recall(tanker);
+            std::cout<<"Airplane"<<tanker<<"is returning to the base\n";
+        } catch (const std::logic_error& error) {
+            std::cout << "Invalid command: " << error.what() << '\n';
+        }
+        return Input::Available;
+    }
 Input readWait(Mission& mission) {
     int steps = 0;
     if (!(std::cin >> steps)) {
@@ -99,7 +117,7 @@ Input readWait(Mission& mission) {
 Input play(Mission& mission) {
     std::cout<<mission<<'\n';
     while (mission.status()==Mission::Status::InProgress) {
-        std::cout<<"command: send <palne> <row> <col> | wait <steps> :\n";
+        std::cout<<"command: send <palne> <row> <col> | wait <steps> | recall <plane> :\n";
         std::string command;
         if (!(std::cin >> command)) {
             return Input::Ended;
@@ -109,7 +127,9 @@ Input play(Mission& mission) {
             input=readDispatch(mission);
         } else if (command == "wait") {
             input=readWait(mission);
-        } else {
+        } else if (command == "recall") {
+            input=readRecall(mission);
+        }else {
             skipLine();
             std::cout<<"unknown command\n"<<command<<'\n';
         }
@@ -144,7 +164,7 @@ int main() {
             attempt = initial;
         }
     } catch (const std::exception& error) {
-        std::cout << "Nu pot incarca misiunea: " << error.what() << '\n';
+        std::cout << "Cannot load the mission: " << error.what() << '\n';
         return 1;
     }
     std::cout<<"End.\n";

@@ -44,6 +44,10 @@ void Mission::dispatch(std::size_t tankerIndex, const HexCoord &target) {
     dispatcher_.dispatch(tankerIndex, target, map_);
 }
 
+void Mission::recall(std::size_t tankerIndex) {
+    dispatcher_.recall(tankerIndex);
+}
+
 void Mission::advance() {
     if (status()!= Status::InProgress) {
         throw std::logic_error("Mission: mission ended");
@@ -62,7 +66,7 @@ Mission::Status Mission::status() const {
     return Status::InProgress;
 }
 std::ostream& operator << (std::ostream& os, const Mission& mission) {
-    os<< "=== "<<mission.name_<<" | pas " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
+    os<< "=== "<<mission.name_<<" | step " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
     <<mission.wind_ <<" | " <<mission.status()<<" ===\n"<<mission.map_<<'\n'<<mission.dispatcher_;
     return os;
 }

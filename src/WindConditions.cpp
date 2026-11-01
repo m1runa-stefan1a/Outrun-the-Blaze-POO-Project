@@ -18,6 +18,6 @@ int WindConditions::speedKmh() const {
 }
 
 std::ostream& operator<<(std::ostream& os, const WindConditions& wind) {
-    os << "vant " << wind.speedKmh_ << " km/h spre " << wind.blowsToward_;
+        os << "wind " << wind.speedKmh_ << " km/h towards " << wind.blowsToward_;
     return os;
 }

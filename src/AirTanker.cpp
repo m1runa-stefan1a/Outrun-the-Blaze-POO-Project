@@ -10,6 +10,7 @@ namespace {
             case AirTanker::State::Flying:os << "Flying"; break;
             case AirTanker::State::Refilling:os << "Refilling"; break;
             case AirTanker::State::Dropping:os << "Dropping"; break;
+            case AirTanker::State::Crashed:os << "Crashed"; break;
         }
         return os;
     }
@@ -20,16 +21,27 @@ AirTanker::AirTanker(std::string name, int capacity, int maxWindKmh, const HexCo
         throw std::invalid_argument{"maxWindKmh must be greater than zero"};
     }
 }
-void  AirTanker::sendTo(const HexCoord& destination) {
+void AirTanker::sendTo(const HexCoord& destination) {
+    requireNotCrashed();
     destination_ = destination;
 }
+void AirTanker::returnToBase() {
+    requireNotCrashed();
+    destination_ = base_;
+}
+
 void AirTanker::advance(const WindConditions& wind) {
+    if (state_ == State::Crashed) {
+        return;
+    }
     if (!canFlyIn(wind)) {
         if (isAtBase()) {
             state_ = State::Grounded;
             return;
+        }else {
+            state_ =State::Crashed;
         }
-        destination_ = base_;
+        return;
     }
     if (hasArrived()) {
         if (isAtBase()) {
@@ -47,7 +59,7 @@ bool AirTanker::hasArrived() const {
     return position_ == destination_;
 }
 bool AirTanker::isOnStation() const {
-    return hasArrived() && !isAtBase();
+    return state_ != State::Crashed && hasArrived() && !isAtBase();
 }
 
 bool AirTanker::hasWater() const {
@@ -75,6 +87,11 @@ bool AirTanker::isAtBase() const {
 void AirTanker::requireOnStation(const char* action) const {
     if (!isOnStation()) {
     throw std::logic_error(name_ + " can't " + action + ": not above the target");
+    }
+}
+void AirTanker::requireNotCrashed() const {
+    if (state_ == State::Crashed) {
+        throw std::logic_error(name_ + "  has crashed and no longer accepts commands");
     }
 }
 std::ostream& operator<< (std::ostream& os, const AirTanker& tanker) {

@@ -9,9 +9,10 @@
 
 class AirTanker {
 public:
-    enum class State{ AtBase, Grounded, Flying, Refilling, Dropping};
+    enum class State{ AtBase, Grounded, Flying, Refilling, Dropping, Crashed};
     AirTanker(std::string name, int capacity, int maxWindKmh, const HexCoord& base);
     void sendTo(const HexCoord& destination);
+    void returnToBase();
     void advance(const WindConditions& wind);
     bool canFlyIn(const WindConditions& wind) const;
     bool hasArrived() const;
@@ -25,6 +26,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const AirTanker& tanker);
 private:
     bool isAtBase() const;
+    void requireNotCrashed() const;
     void requireOnStation(const char* action) const;
     std::string name_;
     WaterPayload payload_;

@@ -13,6 +13,7 @@ class AirOpsDispatcher {
 public:
     AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerStep, int dropPerStep);
     void dispatch(std::size_t tankerIndex, const HexCoord& target, const ForestMap& map);
+    void recall(std::size_t tankerIndex);
     void advance(const WindConditions& wind, ForestMap& map);
     friend std::ostream& operator<<(std::ostream& os, const AirOpsDispatcher& dispatcher);
 private:

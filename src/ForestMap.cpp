@@ -9,7 +9,7 @@ namespace {
             case 'L': return WildfireSector::Terrain::Lake;
             case 'C': return WildfireSector::Terrain::Cabin;
             default:
-                throw std::invalid_argument(std::string{"ForestMap: unknown terrain"}+symbol+"'");
+                throw std::invalid_argument(std::string{"ForestMap: unknown terrain '"}+symbol+"'");
         }
     }
 
@@ -124,6 +124,6 @@ std::ostream& operator<<(std::ostream& os, const ForestMap& map) {
         }
         os << map.sectors_[i]<<' ';
     }
-    os << "\nhumidity"<<map.humidityPercent_<<"%, lost"<< map.lostPercent()<<"%";
+        os << "\nhumidity " << map.humidityPercent_ << "%, lost " << map.lostPercent() << "%";
     return os;
 }
