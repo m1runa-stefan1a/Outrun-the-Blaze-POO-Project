@@ -3,7 +3,7 @@
 #include <utility>
 
 AirOpsDispatcher::AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerStep, int dropPerStep)
-    : fleet_{std::move(fleet)}, dropPerStep_{dropPerStep}, refillPerStep_{refillPerStep} {
+        : fleet_{std::move(fleet)}, refillPerStep_{refillPerStep}, dropPerStep_{dropPerStep} {
         if (fleet_.empty()) {
             throw std::invalid_argument("AirOpsDispatcher::AirOpsDispatcher: fleet can't be empty");
         }
@@ -14,15 +14,14 @@ AirOpsDispatcher::AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerSt
 
 void AirOpsDispatcher::dispatch(std::size_t tankerIndex, const HexCoord& target, const ForestMap& map) {
     if (!map.contains(target)) {
-        throw std::invalid_argument("AirOpsDispatcher: target does not exist");
-    }
+        throw std::out_of_range("AirOpsDispatcher: target does not exist");    }
     if (tankerIndex >= fleet_.size()) {
         throw std::out_of_range("AirOpsDispatcher: nu exista aeronava cu acest numar");
     }
     fleet_[tankerIndex].sendTo(target);
 }
 void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
-    for (AirTanker tanker : fleet_) {
+    for (AirTanker& tanker : fleet_) {
         tanker.advance(wind);
         if (tanker.isOnStation()) {
             workOnStation(tanker, map);
@@ -32,7 +31,9 @@ void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
 void AirOpsDispatcher::workOnStation(AirTanker& tanker, ForestMap& map) const {
     const HexCoord& where = tanker. position();
     if (map.isLake(where)) {
-        tanker.refill(refillPerStep_);
+        if (!tanker.isTankFull()) {
+            tanker.refill(refillPerStep_);
+        }
     }
     else if (tanker.hasWater()&&map.isBurning(where)) {
         const int dropped=tanker.dropWater(dropPerStep_);
