@@ -58,6 +58,7 @@ void Mission::advance() {
     map_.spreadFire(weather_.current());
     ++elapsed_;
 }
+
 Mission::Status Mission::status() const {
     if (map_.isCabinLost()||map_.lostPercent()>maxLostPercent) {
         return Status::Lost;
