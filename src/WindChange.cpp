@@ -7,7 +7,7 @@ WindChange::WindChange(int step, int speedKmh, std::optional<Direction> directio
         throw std::invalid_argument{"step must be greater than zero"};
     }
     if (speedKmh_ < 0) {
-        throw std::invalid_argument{"speedKmh must be greater than zero"};
+        throw std::invalid_argument{"wind speed can't be negative"};
     }
 }
 

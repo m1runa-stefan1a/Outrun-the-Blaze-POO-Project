@@ -74,7 +74,7 @@ void Mission::reportAlerts(std::ostream &os) const {
     }
     dispatcher_.reportWindRisks(weather_.current(), os);
     os << "\n[DISPATCH] fire: " <<map_.burningCount()<<" sectors burning, "<< map_.lostPercent() <<"% of the forest is lost (mission lost above "<<maxLostPercent<<"%)";
-    if (map_.lostPercent() > lostWarningPercent) {
+    if (map_.lostPercent() >= lostWarningPercent) {
         os<< "\n[DISPATCH] WARNING: forest loss is close to the limit!";
     }
     if (map_.isCabinThreatened()) {
