@@ -4,6 +4,13 @@
   "windDirection": "E",
   "windSpeedKmh": 35,
   "humidityPercent": 60,
+  "windChanges": [
+    { "step": 6, "speedKmh": 45 },
+    { "step": 10, "speedKmh": 52, "direction": "NE" },
+    { "step": 14, "speedKmh": 65 },
+    { "step": 18, "speedKmh": 40 },
+    { "step": 22, "speedKmh": 25, "direction": "E" }
+  ],
   "map": [
     "PPPPPPPPPP",
     "PPPPPPPPPP",

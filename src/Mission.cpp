@@ -13,8 +13,8 @@ namespace {
         return os;
     }
 }
-Mission::Mission(std::string name, const WindConditions& wind, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
-    : name_{std::move(name)}, wind_{wind}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
+Mission::Mission(std::string name, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
+    : name_{std::move(name)}, weather_{weather}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
     if (timeLimit_ <= 0) {
         throw std::invalid_argument("Mission:timeLimit must be greater than 0.");
     }
@@ -26,11 +26,11 @@ Mission::Mission(std::string name, const WindConditions& wind, ForestMap map, Ai
     }
 }
 Mission::Mission(const Mission& other)
-    :name_{other.name_}, wind_{other.wind_}, map_{other.map_}, dispatcher_{other.dispatcher_}, timeLimit_{other.timeLimit_}, elapsed_ {other.elapsed_} {}
+    :name_{other.name_}, weather_{other.weather_}, map_{other.map_}, dispatcher_{other.dispatcher_}, timeLimit_{other.timeLimit_}, elapsed_ {other.elapsed_} {}
 Mission& Mission::operator=(const Mission& other) {
     if (this != &other) {
         name_=other.name_;
-        wind_=other.wind_;
+        weather_=other.weather_;
         map_=other.map_;
         dispatcher_=other.dispatcher_;
         timeLimit_=other.timeLimit_;
@@ -52,8 +52,9 @@ void Mission::advance() {
     if (status()!= Status::InProgress) {
         throw std::logic_error("Mission: mission ended");
     }
-    dispatcher_.advance(wind_, map_);
-    map_.spreadFire(wind_);
+    weather_.update(elapsed_ + 1);
+    dispatcher_.advance(weather_.current(), map_);
+    map_.spreadFire(weather_.current());
     ++elapsed_;
 }
 Mission::Status Mission::status() const {
@@ -67,6 +68,6 @@ Mission::Status Mission::status() const {
 }
 std::ostream& operator << (std::ostream& os, const Mission& mission) {
     os<< "=== "<<mission.name_<<" | step " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
-    <<mission.wind_ <<" | " <<mission.status()<<" ===\n"<<mission.map_<<'\n'<<mission.dispatcher_;
+    <<mission.weather_ <<" | " <<mission.status()<<" ===\n"<<mission.map_<<'\n'<<mission.dispatcher_;
     return os;
 }

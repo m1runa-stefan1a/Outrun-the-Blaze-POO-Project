@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "Mission.h"
 
@@ -40,11 +41,20 @@ namespace {
         }
         const AirOpsDispatcher dispatcher{fleet, data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
         const WindConditions wind{directionFromText(data.at("windDirection").get<std::string>()),data.at("windSpeedKmh").get<int>()};
+        std::vector<WindChange> changes;
+        for (const nlohmann::json& change : data.at("windChanges")) {
+            std::optional<Direction> direction;
+            if (change.contains("direction")) {
+                direction = directionFromText(change.at("direction").get<std::string>());
+            }
+            changes.emplace_back(change.at("step").get<int>(), change.at("speedKmh").get<int>(), direction);
+        }
+        const WeatherForecast weather{wind, changes};
         std::vector<HexCoord> fires;
         for (const nlohmann::json& fire : data.at("fires")) {
             fires.emplace_back(fire.at("row").get<int>(), fire.at("col").get<int>());
         }
-        return Mission{data.at("name").get<std::string>(), wind, map, dispatcher, fires, data.at("timeLimit").get<int>()};
+        return Mission{data.at("name").get<std::string>(), weather, map, dispatcher, fires, data.at("timeLimit").get<int>()};
     }
 
 

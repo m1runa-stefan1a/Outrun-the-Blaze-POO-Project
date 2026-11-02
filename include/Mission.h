@@ -9,11 +9,12 @@
 #include "ForestMap.h"
 #include "HexCoord.h"
 #include "WindConditions.h"
+#include "WeatherForecast.h"
 
 class Mission {
 public:
     enum class Status{InProgress, Won, Lost};
-    Mission(std::string name, const WindConditions& wind, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
+    Mission(std::string name, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
     Mission(const Mission& other);
     Mission& operator=(const Mission& other);
     ~Mission();
@@ -24,7 +25,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);
 private:
     std::string name_;
-    WindConditions wind_;
+    WeatherForecast weather_;
     ForestMap map_;
     AirOpsDispatcher dispatcher_;
     int timeLimit_;
