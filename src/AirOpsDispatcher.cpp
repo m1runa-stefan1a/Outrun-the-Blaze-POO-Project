@@ -44,6 +44,13 @@ int AirOpsDispatcher::crashedCount() const {
     return static_cast<int>(std::count_if(fleet_.begin(), fleet_.end(),
         [](const AirTanker& tanker) { return tanker.isCrashed(); }));
 }
+void AirOpsDispatcher::describeFleet(std::ostream& os) const {
+    os << "=== FLEET STATUS ===";
+    for (std::size_t i = 0; i < fleet_.size(); ++i) {
+        os << "\n " << i << ". ";
+        fleet_[i].describe(os);
+    }
+}
 void AirOpsDispatcher::reportWindRisks(const WindConditions& wind, std::ostream& os) const {
     for (const AirTanker& tanker : fleet_) {
         tanker.reportWindRisk(wind, os);

@@ -82,10 +82,35 @@ Input readWait(Mission& mission) {
     }
     return Input::Available;
 }
+void printHelp() {
+    std::cout << "\n=== DISPATCHER COMMANDS ===\n"
+              << "send <plane> <row> <col>  send an aircraft to a sector: over a lake it refills,\n"
+              << "                          over a burning sector it drops water\n"
+              << "recall <plane>            bring an aircraft back to its base (the only safe place)\n"
+              << "wait <steps>              let time pass; aircraft move one sector per step\n"
+              << "status                    show wind limits, bases and tanks of the whole fleet\n"
+              << "help                      show this help\n"
+              << "\n=== MAP SYMBOLS ===\n"
+              << "P forest   ~ lake   C cabin   * burning   # burned\n"
+              << "row numbers are on the left, column numbers on top\n"
+              << "\n=== AIRCRAFT STATES ===\n"
+              << "AtBase     safe at its base\n"
+              << "Grounded   at its base, the wind is too strong to take off\n"
+              << "Flying     on the way to its destination\n"
+              << "Refilling  taking water from a lake\n"
+              << "Dropping   dropping water on a fire\n"
+              << "Hovering   waiting above its destination\n"
+              << "Crashed    lost: the wind went over its limit while it was in the air\n"
+              << "\n=== RULES ===\n"
+              << "the mission is won when no fire is left or the time limit is reached\n"
+              << "the mission is lost if the cabin burns or too much of the forest is lost\n"
+              << "an aircraft in the air crashes if the wind goes over its limit - recall it in time\n"
+              << "score: 1000, -20 per burned sector, -150 per crashed aircraft, +10 per remaining step\n";
+}
 Input play(Mission& mission, ScoreBoard& scores) {
     while (mission.status()==Mission::Status::InProgress) {
         std::cout<<mission<<'\n';
-        std::cout<<"command: send <plane> <row> <col> | wait <steps> | recall <plane> :\n";
+                std::cout<<"command: send <plane> <row> <col> | wait <steps> | recall <plane> | status | help :\n";
         std::string command;
         if (!(std::cin >> command)) {
             return Input::Ended;
@@ -95,6 +120,11 @@ Input play(Mission& mission, ScoreBoard& scores) {
             input=readDispatch(mission);
         } else if (command == "wait") {
             input=readWait(mission);
+        } else if (command == "status") {
+            mission.describeStatus(std::cout);
+            std::cout << '\n';
+        } else if (command == "help") {
+            printHelp();
         } else if (command == "recall") {
             input=readRecall(mission);
         }else {

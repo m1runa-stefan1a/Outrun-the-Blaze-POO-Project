@@ -22,6 +22,7 @@ public:
     const HexCoord& position() const;
     bool isAirborne() const;
     bool isCrashed() const;
+    void describe(std::ostream& os) const;
     void reportWindRisk(const WindConditions& wind, std::ostream& os) const;
     void refill(int portion);
     int dropWater(int requested);

@@ -81,10 +81,17 @@ bool AirTanker::isAirborne() const {
 bool AirTanker::isCrashed() const {
     return state_ == State::Crashed;
 }
+void AirTanker::describe(std::ostream& os) const {
+    os << name_ << " [" << state_ << "]: max wind " << maxWindKmh_ << " km/h, base " << base_<< ", tank " << payload_;
+    if (isCrashed()) {
+        os << " - lost in action";
+    } else if (!isAtBase()) {
+        os << " - airborne, " << base_.distanceTo(position_) << " step(s) from base";
+    }
+}
 void AirTanker::reportWindRisk(const WindConditions& wind, std::ostream& os) const {
     if (isAtBase() && !isCrashed() && !canFlyIn(wind)) {
-        os << "\n[DISPATCH] " << name_ << " is grounded: wind " << wind.speedKmh()
-           << " km/h is above its limit of " << maxWindKmh_ << " km/h";
+        os << "\n[DISPATCH] " << name_ << " is grounded: wind " << wind.speedKmh() << " km/h is above its limit of " << maxWindKmh_ << " km/h";
     }
     if (isAirborne() && wind.speedKmh()*100 >= maxWindKmh_* windWarningPercent) {
         os << "\n[DISPATCH] WARNING: " << name_ << " - wind " << wind.speedKmh()<<" km/h is close to its limit of "<<maxWindKmh_<<" km/h, consider recall";

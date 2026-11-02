@@ -1,6 +1,8 @@
 abc
 9
 1
+help
+status
 fly 1 2
 send x
 send 7 2 3

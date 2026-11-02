@@ -93,6 +93,14 @@ void Mission::describe(std::ostream& os) const {
     os << name_ << " [" << difficulty_ << "] - " << dispatcher_.fleetSize() << " aircraft, "
        << timeLimit_ << " steps";
 }
+void Mission::describeStatus(std::ostream& os) const {
+    os << "=== MISSION STATUS: " << name_ << " ===\n"
+       << "step " << elapsed_ << " of " << timeLimit_ << " (" << timeLimit_ - elapsed_ << " remaining)\n"
+       << "current " << weather_ << '\n'
+       << "forest lost: " << map_.lostPercent() << "% (mission lost above " << maxLostPercent << "%), "
+       << map_.burningCount() << " sector(s) burning\n";
+    dispatcher_.describeFleet(os);
+}
 void Mission::reportAlerts(std::ostream &os) const {
     if (status() != Status::InProgress) {
         return;

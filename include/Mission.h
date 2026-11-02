@@ -27,6 +27,7 @@ public:
     MissionReport report() const;
     const std::string& name() const;
     void describe(std::ostream& os) const;
+    void describeStatus(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);
 private:
     void reportAlerts(std::ostream& os) const;
