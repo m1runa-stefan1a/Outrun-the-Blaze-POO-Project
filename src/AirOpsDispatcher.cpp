@@ -36,6 +36,11 @@ void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
         }
     }
 }
+void AirOpsDispatcher::reportWindRisks(const WindConditions& wind, std::ostream& os) const {
+    for (const AirTanker& tanker : fleet_) {
+        tanker.reportWindRisk(wind, os);
+    }
+}
 void AirOpsDispatcher::workOnStation(AirTanker& tanker, ForestMap& map) const {
     const HexCoord& where = tanker. position();
     if (map.isLake(where)) {

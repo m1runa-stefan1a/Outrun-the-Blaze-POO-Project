@@ -102,6 +102,25 @@ bool ForestMap::isCabinLost() const {
     return std::any_of(sectors_.begin(), sectors_.end(),
         [](const WildfireSector& sector) { return sector.isCabin() && sector.isLost(); });
 }
+int ForestMap::burningCount() const {
+    return static_cast<int>(std::count_if(sectors_.begin(), sectors_.end(),
+        [](const WildfireSector& sector) { return sector.isBurning(); }));
+}
+
+bool ForestMap::isCabinThreatened() const {
+    for (const WildfireSector& sector : sectors_) {
+        if (!sector.isCabin()||sector.isLost()) {
+            continue;
+        }
+        for (const Direction direction : allDirections) {
+            const HexCoord near = sector.position().neighbour(direction);
+            if (contains(near) && isBurning(near)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 std::size_t ForestMap::indexOf(const HexCoord& where) const {
     if (!contains(where)) {

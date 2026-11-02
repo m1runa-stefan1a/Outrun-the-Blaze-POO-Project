@@ -4,6 +4,7 @@
 
 namespace {
     constexpr int maxLostPercent = 25;
+    constexpr int lostWarningPercent = 20;
     std::ostream& operator<<(std::ostream& os, Mission::Status status) {
         switch (status) {
             case Mission::Status::InProgress: os << "In Progress"; break;
@@ -66,8 +67,24 @@ Mission::Status Mission::status() const {
     }
     return Status::InProgress;
 }
+
+void Mission::reportAlerts(std::ostream &os) const {
+    if (status() != Status::InProgress) {
+        return;
+    }
+    dispatcher_.reportWindRisks(weather_.current(), os);
+    os << "\n[DISPATCH] fire: " <<map_.burningCount()<<" sectors burning, "<< map_.lostPercent() <<"% of the forest is lost (mission lost above "<<maxLostPercent<<"%)";
+    if (map_.lostPercent() > lostWarningPercent) {
+        os<< "\n[DISPATCH] WARNING: forest loss is close to the limit!";
+    }
+    if (map_.isCabinThreatened()) {
+        os<< "\n[DISPATCH] WARNING: fire next to the cabin!";
+    }
+}
+
 std::ostream& operator << (std::ostream& os, const Mission& mission) {
     os<< "=== "<<mission.name_<<" | step " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
     <<mission.weather_ <<" | " <<mission.status()<<" ===\n"<<mission.map_<<'\n'<<mission.dispatcher_;
+    mission.reportAlerts(os);
     return os;
 }

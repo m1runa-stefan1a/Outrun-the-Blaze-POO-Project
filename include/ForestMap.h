@@ -21,6 +21,8 @@ public:
     bool hasActiveFire() const;
     int lostPercent() const;
     bool isCabinLost() const;
+    int burningCount() const;
+    bool isCabinThreatened() const;
     friend std::ostream& operator<<(std::ostream& os, const ForestMap& map);
 private:
     std::size_t indexOf(const HexCoord& where) const;

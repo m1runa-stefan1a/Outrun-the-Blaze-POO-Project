@@ -24,6 +24,7 @@ public:
     Status status() const;
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);
 private:
+    void reportAlerts(std::ostream& os) const;
     std::string name_;
     WeatherForecast weather_;
     ForestMap map_;

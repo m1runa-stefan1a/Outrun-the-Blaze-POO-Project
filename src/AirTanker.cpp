@@ -3,6 +3,7 @@
 #include <utility>
 
 namespace {
+    constexpr int windWarningPercent = 80;
     std::ostream& operator<< (std::ostream& os, AirTanker::State state) {
         switch (state) {
             case AirTanker::State::AtBase:os << "AtBase"; break;
@@ -70,6 +71,14 @@ bool AirTanker::isTankFull() const {
 }
 const HexCoord& AirTanker::position() const {
     return position_;
+}
+bool AirTanker::isAirborne() const {
+    return state_ != State::Crashed && !isAtBase();
+}
+void AirTanker::reportWindRisk(const WindConditions& wind, std::ostream& os) const {
+    if (isAirborne() && wind.speedKmh()*100 >= maxWindKmh_* windWarningPercent) {
+        os << "\n[DISPATCH] WARNING: " << name_ << " - wind " << wind.speedKmh()<<" km/h is close to its limit of "<<maxWindKmh_<<" km/h, consider recall";
+    }
 }
 void AirTanker::refill(int portion) {
     requireOnStation("refill");

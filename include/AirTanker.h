@@ -20,6 +20,8 @@ public:
     bool hasWater() const;
     bool isTankFull() const;
     const HexCoord& position() const;
+    bool isAirborne() const;
+    void reportWindRisk(const WindConditions& wind, std::ostream& os) const;
     void refill(int portion);
     int dropWater(int requested);
 
