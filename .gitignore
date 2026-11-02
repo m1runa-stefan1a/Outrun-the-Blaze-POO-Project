@@ -712,6 +712,9 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# saved high scores (generated when playing)
+scores.json
+
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 

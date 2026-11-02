@@ -26,6 +26,9 @@ MissionReport::MissionReport(std::string missionName, bool won, int burnedSector
                     + remainingSteps_ * remainingStepsBonus;
     return std::max(0, score);
 }
+const std::string& MissionReport::missionName() const {
+    return missionName_;
+}
 
 std::ostream& operator<< (std::ostream& os, const MissionReport& report) {
     os<< "=== MISSION REPORT: "<< report.missionName_ <<" ===\n";

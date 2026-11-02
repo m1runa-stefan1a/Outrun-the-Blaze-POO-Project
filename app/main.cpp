@@ -9,6 +9,7 @@
 #include <optional>
 
 #include "Mission.h"
+#include "ScoreBoard.h"
 
 #include <json/json.hpp>
 
@@ -123,7 +124,7 @@ Input readWait(Mission& mission) {
     }
     return Input::Available;
 }
-Input play(Mission& mission) {
+Input play(Mission& mission, ScoreBoard& scores) {
     while (mission.status()==Mission::Status::InProgress) {
         std::cout<<mission<<'\n';
         std::cout<<"command: send <palne> <row> <col> | wait <steps> | recall <plane> :\n";
@@ -147,7 +148,14 @@ Input play(Mission& mission) {
         }
     }
     std::cout << mission << '\n';
-    std::cout<< mission.report() << '\n';
+    const MissionReport report = mission.report();
+    std::cout<<report<<'\n';
+    const int previousBest = scores.bestFor(report.missionName());
+    if (scores.submit(report)) {
+        std::cout << "NEW RECORD! (previous best: " << previousBest << ")\n";
+    } else {
+        std::cout << "best score for this mission: " << previousBest << '\n';
+    }
     return Input::Available;
 }
 bool askRetry() {
@@ -171,7 +179,8 @@ int main() {
     try {
         const Mission initial = loadMission("assets/missions.json");
         Mission attempt{initial};
-        while (play(attempt) == Input::Available && askRetry()) {
+        ScoreBoard scores{"scores.json"};
+        while (play(attempt, scores) == Input::Available && askRetry()) {
             attempt = initial;
         }
     } catch (const std::exception& error) {

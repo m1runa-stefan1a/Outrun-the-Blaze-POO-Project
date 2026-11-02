@@ -7,6 +7,7 @@ class MissionReport {
 public:
     MissionReport(std::string missionName, bool won, int burnedSectors, int crashedTankers, int remainingSteps);
     int score() const;
+    const std::string& missionName() const;
     friend std::ostream& operator<<(std::ostream& os, const MissionReport& report);
 private:
     std::string missionName_;
