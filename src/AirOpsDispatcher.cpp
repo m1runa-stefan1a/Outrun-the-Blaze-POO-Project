@@ -37,6 +37,9 @@ void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
         }
     }
 }
+std::size_t AirOpsDispatcher::fleetSize() const {
+    return fleet_.size();
+}
 int AirOpsDispatcher::crashedCount() const {
     return static_cast<int>(std::count_if(fleet_.begin(), fleet_.end(),
         [](const AirTanker& tanker) { return tanker.isCrashed(); }));

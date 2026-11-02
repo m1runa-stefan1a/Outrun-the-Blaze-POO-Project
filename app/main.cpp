@@ -9,55 +9,13 @@
 #include <optional>
 
 #include "Mission.h"
+#include "MissionCatalog.h"
 #include "ScoreBoard.h"
 
 #include <json/json.hpp>
 
 namespace {
     enum class Input { Available, Ended };
-    Direction directionFromText(const std::string& text) {
-        for (const Direction direction : allDirections) {
-            std::ostringstream name;
-            name << direction;
-            if (name.str() == text) {
-                return direction;
-            }
-        }
-        throw std::runtime_error("unknown wind direction: "+text);
-    }
-    Mission loadMission(const std::string& path) {
-        std::ifstream file{path};
-        if (!file) {
-            throw std::runtime_error("cannot open file: "+path);
-        }
-        const nlohmann::json data= nlohmann::json::parse(file);
-        const ForestMap map{
-            data.at("map").get<std::vector<std::string>>(),
-            data.at("humidityPercent").get<int>()};
-        std::vector<AirTanker> fleet;
-        for (const nlohmann::json& tanker:data.at("tankers")) {
-            fleet.emplace_back(tanker.at("name").get<std::string>(), tanker.at("capacity").get<int>(),
-                               tanker.at("maxWindKmh").get<int>(),
-                               HexCoord{tanker.at("row").get<int>(), tanker.at("col").get<int>()});
-        }
-        const AirOpsDispatcher dispatcher{fleet, data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
-        const WindConditions wind{directionFromText(data.at("windDirection").get<std::string>()),data.at("windSpeedKmh").get<int>()};
-        std::vector<WindChange> changes;
-        for (const nlohmann::json& change : data.at("windChanges")) {
-            std::optional<Direction> direction;
-            if (change.contains("direction")) {
-                direction = directionFromText(change.at("direction").get<std::string>());
-            }
-            changes.emplace_back(change.at("step").get<int>(), change.at("speedKmh").get<int>(), direction);
-        }
-        const WeatherForecast weather{wind, changes};
-        std::vector<HexCoord> fires;
-        for (const nlohmann::json& fire : data.at("fires")) {
-            fires.emplace_back(fire.at("row").get<int>(), fire.at("col").get<int>());
-        }
-        return Mission{data.at("name").get<std::string>(), weather, map, dispatcher, fires, data.at("timeLimit").get<int>()};
-    }
-
 
 void skipLine() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -72,7 +30,7 @@ Input readDispatch(Mission& mission) {
         }
         std::cin.clear();
         skipLine();
-        std::cout <<"Format: send <palne> <row> <col>\n";
+        std::cout <<"Format: send <plane> <row> <col>\n";
         return Input::Available;
     }
     const HexCoord target{row, col};
@@ -93,7 +51,7 @@ Input readRecall(Mission& mission) {
             }
             std::cin.clear();
             skipLine();
-            std::cout<<"Format: recall <airplane>\n";
+            std::cout<<"Format: recall <plane>\n";
             return Input::Available;
         }
         try {
@@ -127,7 +85,7 @@ Input readWait(Mission& mission) {
 Input play(Mission& mission, ScoreBoard& scores) {
     while (mission.status()==Mission::Status::InProgress) {
         std::cout<<mission<<'\n';
-        std::cout<<"command: send <palne> <row> <col> | wait <steps> | recall <plane> :\n";
+        std::cout<<"command: send <plane> <row> <col> | wait <steps> | recall <plane> :\n";
         std::string command;
         if (!(std::cin >> command)) {
             return Input::Ended;
@@ -158,6 +116,37 @@ Input play(Mission& mission, ScoreBoard& scores) {
     }
     return Input::Available;
 }
+
+std::optional<std::size_t> chooseMission(const MissionCatalog& catalog, const ScoreBoard& scores) {
+    while (true) {
+        std::cout << "\n=== MISSIONS ===\n";
+        for (std::size_t i = 0; i < catalog.size(); ++i) {
+            const Mission& mission = catalog.at(i);
+            std::cout << i + 1 << ". ";
+            mission.describe(std::cout);
+            std::cout << " | best score: " << scores.bestFor(mission.name()) << '\n';
+        }
+        std::cout << "choose a mission (1-" << catalog.size() << ", 0 to quit): ";
+        std::size_t choice = 0;
+        if (!(std::cin >> choice)) {
+            if (std::cin.eof()) {
+                return std::nullopt;
+            }
+            std::cin.clear();
+            skipLine();
+            std::cout << "please enter a number\n";
+            continue;
+        }
+        if (choice == 0) {
+            return std::nullopt;
+        }
+        if (choice > catalog.size()) {
+            std::cout << "no mission with this number\n";
+            continue;
+        }
+        return choice - 1;
+    }
+}
 bool askRetry() {
     std::string answer;
     while (true) {
@@ -171,20 +160,27 @@ bool askRetry() {
         if (answer == "n") {
             return false;
         }
-        std::cout<<"respond with y/n";
+        std::cout<<"respond with y/n\n";
     }
 }
 }
 int main() {
     try {
-        const Mission initial = loadMission("assets/missions.json");
-        Mission attempt{initial};
+        const MissionCatalog catalog{"assets/missions.json"};
         ScoreBoard scores{"scores.json"};
-        while (play(attempt, scores) == Input::Available && askRetry()) {
-            attempt = initial;
+        while (true) {
+            const std::optional<std::size_t> choice = chooseMission(catalog, scores);
+            if (!choice.has_value()) {
+                break;
+            }
+            const Mission& initial = catalog.at(*choice);
+            Mission attempt{initial};
+            while (play(attempt, scores) == Input::Available && askRetry()) {
+                attempt = initial;
+            }
         }
     } catch (const std::exception& error) {
-        std::cout << "Cannot load the mission: " << error.what() << '\n';
+        std::cout << "Error: " << error.what() << '\n';
         return 1;
     }
     std::cout<<"End.\n";

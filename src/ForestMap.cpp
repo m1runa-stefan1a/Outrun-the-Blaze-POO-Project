@@ -1,8 +1,10 @@
 #include "ForestMap.h"
 #include <algorithm>
+#include <iomanip>
 #include <stdexcept>
 
 namespace {
+    constexpr int cellWidth = 4;
     WildfireSector::Terrain terrainFromSymbol(char symbol) {
         switch (symbol) {
             case 'P': return WildfireSector::Terrain::Forest;
@@ -134,19 +136,21 @@ std::size_t ForestMap::indexOf(const HexCoord& where) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const ForestMap& map) {
+    os << "     ";
+    for (int col = 0; col < map.colCount_; ++col) {
+        os << std::left << std::setw(cellWidth) << col;
+    }
     for (std::size_t i=0; i<map.sectors_.size(); ++i) {
         const auto row = static_cast<int>(i)/map.colCount_;
         const bool rowStart = static_cast<int>(i)%map.colCount_ == 0;
         if (rowStart) {
-            if (i>0) {
-                os<<'\n';
-            }
+            os << '\n' << std::right << std::setw(2) << row << "   ";
             if (row%2!=0) {
-                os<<' ';
+                os << std::string(cellWidth / 2, ' ');
             }
         }
-        os << map.sectors_[i]<<' ';
+        os << std::left << std::setw(cellWidth) << map.sectors_[i];
     }
-        os << "\nhumidity " << map.humidityPercent_ << "%, lost " << map.lostPercent() << "%";
+    os << std::right << "\nhumidity " << map.humidityPercent_ << "%, lost " << map.lostPercent() << "%";
     return os;
 }

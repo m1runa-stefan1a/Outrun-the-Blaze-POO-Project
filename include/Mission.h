@@ -15,7 +15,8 @@
 class Mission {
 public:
     enum class Status{InProgress, Won, Lost};
-    Mission(std::string name, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
+    enum class Difficulty{Easy, Medium, Hard};
+    Mission(std::string name, Difficulty difficulty, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
     Mission(const Mission& other);
     Mission& operator=(const Mission& other);
     ~Mission();
@@ -24,10 +25,13 @@ public:
     void advance();
     Status status() const;
     MissionReport report() const;
+    const std::string& name() const;
+    void describe(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);
 private:
     void reportAlerts(std::ostream& os) const;
     std::string name_;
+    Difficulty difficulty_;
     WeatherForecast weather_;
     ForestMap map_;
     AirOpsDispatcher dispatcher_;

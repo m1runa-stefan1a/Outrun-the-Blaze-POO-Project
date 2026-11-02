@@ -82,6 +82,10 @@ bool AirTanker::isCrashed() const {
     return state_ == State::Crashed;
 }
 void AirTanker::reportWindRisk(const WindConditions& wind, std::ostream& os) const {
+    if (isAtBase() && !isCrashed() && !canFlyIn(wind)) {
+        os << "\n[DISPATCH] " << name_ << " is grounded: wind " << wind.speedKmh()
+           << " km/h is above its limit of " << maxWindKmh_ << " km/h";
+    }
     if (isAirborne() && wind.speedKmh()*100 >= maxWindKmh_* windWarningPercent) {
         os << "\n[DISPATCH] WARNING: " << name_ << " - wind " << wind.speedKmh()<<" km/h is close to its limit of "<<maxWindKmh_<<" km/h, consider recall";
     }
@@ -106,7 +110,7 @@ void AirTanker::requireOnStation(const char* action) const {
 }
 void AirTanker::requireNotCrashed() const {
     if (state_ == State::Crashed) {
-        throw std::logic_error(name_ + "  has crashed and no longer accepts commands");
+        throw std::logic_error(name_ + " has crashed and no longer accepts commands");
     }
 }
 std::ostream& operator<< (std::ostream& os, const AirTanker& tanker) {

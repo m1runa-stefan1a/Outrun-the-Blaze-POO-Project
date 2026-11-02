@@ -1,31 +1,106 @@
 {
-  "name": "Lacul Linistit",
-  "timeLimit": 30,
-  "windDirection": "E",
-  "windSpeedKmh": 35,
-  "humidityPercent": 60,
-  "windChanges": [
-    { "step": 6, "speedKmh": 45 },
-    { "step": 10, "speedKmh": 52, "direction": "NE" },
-    { "step": 14, "speedKmh": 65 },
-    { "step": 18, "speedKmh": 40 },
-    { "step": 22, "speedKmh": 25, "direction": "E" }
-  ],
-  "map": [
-    "PPPPPPPPPP",
-    "PPPPPPPPPP",
-    "PPLLPPPPPP",
-    "PPPPPPPPPP",
-    "PPPPPPPPCP",
-    "PPPPPPPPPP"
-  ],
-  "refillPerStep": 1500,
-  "dropPerStep": 1000,
-  "tankers": [
-    { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 3, "col": 1 },
-    { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 30, "row": 3, "col": 1 }
-  ],
-  "fires": [
-    { "row": 2, "col": 5 }
+  "missions": [
+    {
+      "name": "Lacul Linistit",
+      "difficulty": "easy",
+      "timeLimit": 30,
+      "windDirection": "E",
+      "windSpeedKmh": 35,
+      "humidityPercent": 60,
+      "windChanges": [
+        { "step": 6, "speedKmh": 45 },
+        { "step": 10, "speedKmh": 52, "direction": "NE" },
+        { "step": 14, "speedKmh": 65 },
+        { "step": 18, "speedKmh": 40 },
+        { "step": 22, "speedKmh": 25, "direction": "E" }
+      ],
+      "map": [
+        "PPPPPPPPPP",
+        "PPPPPPPPPP",
+        "PPLLPPPPPP",
+        "PPPPPPPPPP",
+        "PPPPPPPPCP",
+        "PPPPPPPPPP"
+      ],
+      "refillPerStep": 1500,
+      "dropPerStep": 1000,
+      "tankers": [
+        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 3, "col": 1 },
+        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 30, "row": 3, "col": 1 }
+      ],
+      "fires": [
+        { "row": 2, "col": 5 }
+      ]
+    },
+    {
+      "name": "Valea Vantului",
+      "difficulty": "medium",
+      "timeLimit": 35,
+      "windDirection": "SE",
+      "windSpeedKmh": 30,
+      "humidityPercent": 55,
+      "windChanges": [
+        { "step": 5, "speedKmh": 40 },
+        { "step": 9, "speedKmh": 48, "direction": "E" },
+        { "step": 13, "speedKmh": 54 },
+        { "step": 17, "speedKmh": 35, "direction": "NE" },
+        { "step": 24, "speedKmh": 20 }
+      ],
+      "map": [
+        "PPPPPPPPPPPP",
+        "PLLPPPPPPPPP",
+        "PPPPPPPPPPPP",
+        "PPPPPPPPPLLP",
+        "PPPPPPPPPPPP",
+        "PPPPPPPCPPPP",
+        "PPPPPPPPPPPP"
+      ],
+      "refillPerStep": 1500,
+      "dropPerStep": 1000,
+      "tankers": [
+        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
+        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
+        { "name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
+      ],
+      "fires": [
+        { "row": 1, "col": 5 },
+        { "row": 4, "col": 8 }
+      ]
+    },
+    {
+      "name": "Seceta pe Vale",
+      "difficulty": "hard",
+      "timeLimit": 30,
+      "windDirection": "SE",
+      "windSpeedKmh": 30,
+      "humidityPercent": 50,
+      "windChanges": [
+        { "step": 5, "speedKmh": 42 },
+        { "step": 9, "speedKmh": 50, "direction": "E" },
+        { "step": 13, "speedKmh": 54 },
+        { "step": 17, "speedKmh": 35, "direction": "NE" },
+        { "step": 24, "speedKmh": 20 }
+      ],
+      "map": [
+        "PPPPPPPPPPPP",
+        "PLLPPPPPPPPP",
+        "PPPPPPPPPPPP",
+        "PPPPPPPPPLLP",
+        "PPPPPPPPPPPP",
+        "PPPPPPPCPPPP",
+        "PPPPPPPPPPPP"
+      ],
+      "refillPerStep": 1500,
+      "dropPerStep": 1000,
+      "tankers": [
+        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
+        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
+        { "name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
+      ],
+      "fires": [
+        { "row": 1, "col": 5 },
+        { "row": 4, "col": 8 }
+      ]
+    }
   ]
 }

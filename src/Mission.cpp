@@ -13,9 +13,17 @@ namespace {
         }
         return os;
     }
+    std::ostream& operator<<(std::ostream& os, Mission::Difficulty difficulty) {
+        switch (difficulty) {
+            case Mission::Difficulty::Easy: os << "Easy"; break;
+            case Mission::Difficulty::Medium: os << "Medium"; break;
+            case Mission::Difficulty::Hard: os << "Hard"; break;
+        }
+        return os;
+    }
 }
-Mission::Mission(std::string name, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
-    : name_{std::move(name)}, weather_{weather}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
+Mission::Mission(std::string name, Difficulty difficulty, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
+    : name_{std::move(name)}, difficulty_{difficulty}, weather_{weather}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
     if (timeLimit_ <= 0) {
         throw std::invalid_argument("Mission:timeLimit must be greater than 0.");
     }
@@ -27,10 +35,11 @@ Mission::Mission(std::string name, const WeatherForecast& weather, ForestMap map
     }
 }
 Mission::Mission(const Mission& other)
-    :name_{other.name_}, weather_{other.weather_}, map_{other.map_}, dispatcher_{other.dispatcher_}, timeLimit_{other.timeLimit_}, elapsed_ {other.elapsed_} {}
+    :name_{other.name_}, difficulty_{other.difficulty_}, weather_{other.weather_}, map_{other.map_}, dispatcher_{other.dispatcher_}, timeLimit_{other.timeLimit_}, elapsed_ {other.elapsed_} {}
 Mission& Mission::operator=(const Mission& other) {
     if (this != &other) {
         name_=other.name_;
+        difficulty_=other.difficulty_;
         weather_=other.weather_;
         map_=other.map_;
         dispatcher_=other.dispatcher_;
@@ -76,6 +85,14 @@ MissionReport Mission::report() const {
     }
     return MissionReport{name_, result == Status::Won, map_.lostCount(),dispatcher_.crashedCount(), timeLimit_ - elapsed_};
 }
+const std::string& Mission::name() const {
+    return name_;
+}
+
+void Mission::describe(std::ostream& os) const {
+    os << name_ << " [" << difficulty_ << "] - " << dispatcher_.fleetSize() << " aircraft, "
+       << timeLimit_ << " steps";
+}
 void Mission::reportAlerts(std::ostream &os) const {
     if (status() != Status::InProgress) {
         return;
@@ -91,7 +108,7 @@ void Mission::reportAlerts(std::ostream &os) const {
 }
 
 std::ostream& operator << (std::ostream& os, const Mission& mission) {
-    os<< "=== "<<mission.name_<<" | step " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
+    os<< "=== "<<mission.name_<<" ["<<mission.difficulty_<<"] | step " <<mission.elapsed_ <<'/'<<mission.timeLimit_<< " | "
     <<mission.weather_ <<" | " <<mission.status()<<" ===\n"<<mission.map_<<'\n'<<mission.dispatcher_;
     mission.reportAlerts(os);
     return os;

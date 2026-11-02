@@ -1,12 +1,32 @@
-wait 20
-maybe
-y
+abc
+9
+1
 fly 1 2
+send x
 send 7 2 3
 send 0 9 9
-send 0 2 3
-send 1 2 2
-wait 3
+wait 0
+wait abc
+recall 9
+recall abc
+wait 6
+send 0 2 2
+wait 4
+wait 4
 send 0 2 5
-wait 5
+recall 0
+wait 30
+maybe
+y
+send 0 2 2
+wait 2
+send 0 2 5
+wait 1
+recall 0
+send 0 2 5
+wait 3
 n
+2
+wait 40
+n
+0
