@@ -20,6 +20,7 @@ public:
     bool isBurning(const HexCoord& where) const;
     bool hasActiveFire() const;
     int lostPercent() const;
+    int lostCount() const;
     bool isCabinLost() const;
     int burningCount() const;
     bool isCabinThreatened() const;

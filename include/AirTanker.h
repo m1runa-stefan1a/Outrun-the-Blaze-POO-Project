@@ -9,7 +9,7 @@
 
 class AirTanker {
 public:
-    enum class State{ AtBase, Grounded, Flying, Refilling, Dropping, Crashed};
+    enum class State{ AtBase, Grounded, Flying, Refilling, Dropping, Hovering, Crashed};
     AirTanker(std::string name, int capacity, int maxWindKmh, const HexCoord& base);
     void sendTo(const HexCoord& destination);
     void returnToBase();
@@ -21,6 +21,7 @@ public:
     bool isTankFull() const;
     const HexCoord& position() const;
     bool isAirborne() const;
+    bool isCrashed() const;
     void reportWindRisk(const WindConditions& wind, std::ostream& os) const;
     void refill(int portion);
     int dropWater(int requested);

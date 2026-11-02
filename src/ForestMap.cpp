@@ -97,6 +97,10 @@ int ForestMap::lostPercent() const {
         [](const WildfireSector& sector) { return sector.isLost(); });
     return static_cast<int>(lost*100/burnable);
 }
+int ForestMap::lostCount() const {
+    return static_cast<int>(std::count_if(sectors_.begin(), sectors_.end(),
+        [](const WildfireSector& sector) { return sector.isLost(); }));
+}
 
 bool ForestMap::isCabinLost() const {
     return std::any_of(sectors_.begin(), sectors_.end(),

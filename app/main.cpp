@@ -121,12 +121,11 @@ Input readWait(Mission& mission) {
     for (int i=0; i<steps && mission.status()==Mission::Status::InProgress; ++i) {
         mission.advance();
     }
-    std::cout<<mission<<'\n';
     return Input::Available;
 }
 Input play(Mission& mission) {
-    std::cout<<mission<<'\n';
     while (mission.status()==Mission::Status::InProgress) {
+        std::cout<<mission<<'\n';
         std::cout<<"command: send <palne> <row> <col> | wait <steps> | recall <plane> :\n";
         std::string command;
         if (!(std::cin >> command)) {
@@ -147,6 +146,8 @@ Input play(Mission& mission) {
             return Input::Ended;
         }
     }
+    std::cout << mission << '\n';
+    std::cout<< mission.report() << '\n';
     return Input::Available;
 }
 bool askRetry() {

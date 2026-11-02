@@ -15,6 +15,7 @@ public:
     void dispatch(std::size_t tankerIndex, const HexCoord& target, const ForestMap& map);
     void recall(std::size_t tankerIndex);
     void advance(const WindConditions& wind, ForestMap& map);
+    int crashedCount() const;
     void reportWindRisks(const WindConditions& wind, std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const AirOpsDispatcher& dispatcher);
 private:

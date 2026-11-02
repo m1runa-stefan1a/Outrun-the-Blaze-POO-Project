@@ -69,6 +69,13 @@ Mission::Status Mission::status() const {
     return Status::InProgress;
 }
 
+MissionReport Mission::report() const {
+    const Status result = status();
+    if (result == Status::InProgress) {
+        throw std::logic_error("Mission: the report is available only after the mission ends");
+    }
+    return MissionReport{name_, result == Status::Won, map_.lostCount(),dispatcher_.crashedCount(), timeLimit_ - elapsed_};
+}
 void Mission::reportAlerts(std::ostream &os) const {
     if (status() != Status::InProgress) {
         return;

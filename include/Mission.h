@@ -8,6 +8,7 @@
 #include "AirOpsDispatcher.h"
 #include "ForestMap.h"
 #include "HexCoord.h"
+#include "MissionReport.h"
 #include "WindConditions.h"
 #include "WeatherForecast.h"
 
@@ -22,6 +23,7 @@ public:
     void recall(std::size_t tankerIndex);
     void advance();
     Status status() const;
+    MissionReport report() const;
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);
 private:
     void reportAlerts(std::ostream& os) const;

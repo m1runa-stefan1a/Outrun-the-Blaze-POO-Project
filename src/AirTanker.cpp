@@ -11,6 +11,7 @@ namespace {
             case AirTanker::State::Flying:os << "Flying"; break;
             case AirTanker::State::Refilling:os << "Refilling"; break;
             case AirTanker::State::Dropping:os << "Dropping"; break;
+            case AirTanker::State::Hovering:os << "Hovering"; break;
             case AirTanker::State::Crashed:os << "Crashed"; break;
         }
         return os;
@@ -47,6 +48,8 @@ void AirTanker::advance(const WindConditions& wind) {
     if (hasArrived()) {
         if (isAtBase()) {
             state_ = State::AtBase;
+        } else {
+            state_ = State::Hovering;
         }
         return;
     }
@@ -74,6 +77,9 @@ const HexCoord& AirTanker::position() const {
 }
 bool AirTanker::isAirborne() const {
     return state_ != State::Crashed && !isAtBase();
+}
+bool AirTanker::isCrashed() const {
+    return state_ == State::Crashed;
 }
 void AirTanker::reportWindRisk(const WindConditions& wind, std::ostream& os) const {
     if (isAirborne() && wind.speedKmh()*100 >= maxWindKmh_* windWarningPercent) {
@@ -104,7 +110,10 @@ void AirTanker::requireNotCrashed() const {
     }
 }
 std::ostream& operator<< (std::ostream& os, const AirTanker& tanker) {
-    os << tanker.name_ << " [" << tanker.state_ << "] at " << tanker.position_
-    << ", tank " << tanker.payload_;
+    os << tanker.name_ << " [" << tanker.state_ << "] at " << tanker.position_;
+    if (!tanker.hasArrived() && !tanker.isCrashed()) {
+        os << " -> " << tanker.destination_;
+    }
+    os << ", tank " << tanker.payload_;
     return os;
 }

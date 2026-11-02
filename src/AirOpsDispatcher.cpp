@@ -1,6 +1,7 @@
 #include "AirOpsDispatcher.h"
 #include <stdexcept>
 #include <utility>
+#include <algorithm>
 
 AirOpsDispatcher::AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerStep, int dropPerStep)
         : fleet_{std::move(fleet)}, refillPerStep_{refillPerStep}, dropPerStep_{dropPerStep} {
@@ -35,6 +36,10 @@ void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
             workOnStation(tanker, map);
         }
     }
+}
+int AirOpsDispatcher::crashedCount() const {
+    return static_cast<int>(std::count_if(fleet_.begin(), fleet_.end(),
+        [](const AirTanker& tanker) { return tanker.isCrashed(); }));
 }
 void AirOpsDispatcher::reportWindRisks(const WindConditions& wind, std::ostream& os) const {
     for (const AirTanker& tanker : fleet_) {
