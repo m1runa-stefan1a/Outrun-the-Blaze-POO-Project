@@ -25,7 +25,6 @@ public:
     void advance();
     Status status() const;
     MissionReport report() const;
-    const std::string& name() const;
     void describe(std::ostream& os) const;
     void describeStatus(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const Mission& mission);

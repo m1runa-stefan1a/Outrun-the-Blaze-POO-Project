@@ -85,9 +85,6 @@ MissionReport Mission::report() const {
     }
     return MissionReport{name_, result == Status::Won, map_.lostCount(),dispatcher_.crashedCount(), timeLimit_ - elapsed_};
 }
-const std::string& Mission::name() const {
-    return name_;
-}
 
 void Mission::describe(std::ostream& os) const {
     os << name_ << " [" << difficulty_ << "] - " << dispatcher_.fleetSize() << " aircraft, "
