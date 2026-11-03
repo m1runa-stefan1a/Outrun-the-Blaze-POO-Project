@@ -5,6 +5,60 @@ Utilizatorul coordonează o flotă de aeronave pe o hartă hexagonală: le trimi
 pentru alimentare și lansează apă sau retardant peste focare, în timp ce focul se
 extinde în funcție de vânt și de umiditatea pădurii.
 
+### Misiunile
+
+| # | Misiune | Dificultate | Ce o face grea |
+|---|---|---|---|
+| 1 | Lacul Liniștit | ușor | un singur foc, lacul aproape de bază |
+| 2 | Valea Vântului | mediu | două focuri la capete opuse, trei avioane |
+| 3 | Seceta pe Vale | greu | pădure mai uscată, vânt mai puternic, timp mai scurt |
+
+### Comenzi
+
+| Comandă | Ce face | Trece timpul? |
+|---|---|---|
+| `send <avion> <rând> <coloană>` | trimite avionul pe un sector | nu |
+| `recall <avion>` | îl întoarce la bază | nu |
+| `wait <pași>` | rulează simularea pas cu pas | **da** |
+| `status` | limitele de vânt, bazele, rezervoarele, pașii rămași | nu |
+| `help` | toate comenzile și regulile | nu |
+
+`send` și `recall` doar dau ordine: avioanele se mișcă abia la următorul `wait`.
+Numărul avionului e cel din lista flotei (`0`, `1`, ...), iar rândul și coloana se citesc
+de pe marginile hărții.
+
+### Harta
+
+```
+     0   1   2   3   4 ...
+ 0   P   P   P   P   P
+ 1     P   ~   ~   P   *
+ 2   P   P   P   P   P
+```
+
+`P` pădure · `~` lac · `C` cabană · `*` arde · `#` ars complet.
+Rândurile impare sunt decalate pentru că sectoarele sunt hexagoane: fiecare are 6 vecini.
+
+### Reguli
+
+- **Mișcare:** fiecare avion parcurge un hexagon pe pas, pe drumul cel mai scurt.
+- **Apă:** deasupra unui lac avionul se alimentează, deasupra unui sector care arde aruncă
+  apă. Un foc proaspăt se stinge dintr-o singură aruncare; unul vechi are nevoie de mai multe.
+- **Focul** se întinde la sectoarele vecine, mai repede în direcția în care bate vântul și
+  mai încet când umiditatea pădurii e mare. Un sector lăsat să ardă se pierde după 10 pași.
+- **Vântul** se schimbă pe parcursul misiunii; prognoza din antet arată următoarea schimbare.
+- **Pericol:** fiecare avion are o limită de vânt. La bază e în siguranță (rămâne la sol),
+  dar **în aer se prăbușește** dacă vântul trece de limită, iar un avion prăbușit nu mai
+  primește comenzi. Dispeceratul te avertizează când vântul ajunge la 80% din limită.
+- **Câștigi** dacă stingi toate focurile sau rezişti până la limita de timp.
+- **Pierzi** dacă arde cabana sau se pierde peste 25% din pădure.
+
+### Scor
+
+Pornești de la 1000 de puncte: −20 pentru fiecare sector pierdut, −150 pentru fiecare
+avion prăbușit, +10 pentru fiecare pas rămas până la limita de timp. O misiune pierdută
+are scorul 0. Cel mai bun scor al fiecărei misiuni se salvează în `scores.json`.
+
 ### Important!
 
 Aveți voie cu agenți care generează cod doar dacă păstrați AGENTS.md și de `.internal/` *pe toată durata semestrului*.
