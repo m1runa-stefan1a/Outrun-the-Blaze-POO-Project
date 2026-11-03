@@ -2,6 +2,7 @@
 #define SCORE_BOARD_H
 #include <map>
 #include <string>
+#include <ostream>
 
 #include "MissionReport.h"
 
@@ -10,6 +11,7 @@ public:
     explicit ScoreBoard(std::string path);
     int bestFor(const std::string& missionName) const;
     bool submit(const MissionReport& report);
+    friend std::ostream& operator<<(std::ostream& os, const ScoreBoard& board);
 private:
     void load();
     void save() const;

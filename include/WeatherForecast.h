@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "WindChange.h"
-#include "WindChange.h"
 #include "WindConditions.h"
 
 class WeatherForecast {

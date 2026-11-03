@@ -1,18 +1,14 @@
 #include <cstddef>
-#include <fstream>
 #include <iostream>
 #include <limits>
-#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <vector>
 #include <optional>
 
 #include "Mission.h"
 #include "MissionCatalog.h"
 #include "ScoreBoard.h"
 
-#include <json/json.hpp>
 
 namespace {
     enum class Input { Available, Ended };
@@ -149,13 +145,7 @@ Input play(Mission& mission, ScoreBoard& scores) {
 
 std::optional<std::size_t> chooseMission(const MissionCatalog& catalog, const ScoreBoard& scores) {
     while (true) {
-        std::cout << "\n=== MISSIONS ===\n";
-        for (std::size_t i = 0; i < catalog.size(); ++i) {
-            const Mission& mission = catalog.at(i);
-            std::cout << i + 1 << ". ";
-            mission.describe(std::cout);
-            std::cout << " | best score: " << scores.bestFor(mission.name()) << '\n';
-        }
+        std::cout << '\n' << catalog << '\n' << scores << '\n';
         std::cout << "choose a mission (1-" << catalog.size() << ", 0 to quit): ";
         std::size_t choice = 0;
         if (!(std::cin >> choice)) {

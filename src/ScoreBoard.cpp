@@ -47,3 +47,13 @@ void ScoreBoard::save() const {
     const nlohmann::json data = best_;
     file << data.dump(2) << '\n';
 }
+std::ostream& operator<<(std::ostream& os, const ScoreBoard& board) {
+    os << "=== HIGH SCORES ===";
+    if (board.best_.empty()) {
+        os << "\nno records yet";
+    }
+    for (const auto& record : board.best_) {
+        os << '\n' << record.first << ": " << record.second;
+    }
+    return os;
+}

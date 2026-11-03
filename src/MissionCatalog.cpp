@@ -81,3 +81,11 @@ const Mission& MissionCatalog::at(std::size_t index) const {
      }
      return missions_[index];
  }
+std::ostream& operator<<(std::ostream& os, const MissionCatalog& catalog) {
+     os << "=== MISSIONS ===";
+     for (std::size_t i = 0; i < catalog.missions_.size(); ++i) {
+         os << '\n' << i + 1 << ". ";
+         catalog.missions_[i].describe(os);
+     }
+     return os;
+ }

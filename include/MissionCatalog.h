@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <ostream>
 
 #include "Mission.h"
 
@@ -11,6 +12,7 @@ public:
     explicit MissionCatalog(const std::string& path);
     std::size_t size() const;
     const Mission& at(std::size_t index) const;
+    friend std::ostream& operator<<(std::ostream& os, const MissionCatalog& catalog);
 private:
     std::vector<Mission> missions_;
 };
