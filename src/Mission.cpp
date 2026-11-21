@@ -22,8 +22,8 @@ namespace {
         return os;
     }
 }
-Mission::Mission(std::string name, Difficulty difficulty, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
-    : name_{std::move(name)}, difficulty_{difficulty}, weather_{weather}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
+Mission::Mission(std::string name, Difficulty difficulty, WeatherForecast weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
+    : name_{std::move(name)}, difficulty_{difficulty}, weather_{std::move(weather)}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
     if (timeLimit_ <= 0) {
         throw std::invalid_argument("Mission:timeLimit must be greater than 0.");
     }
@@ -34,8 +34,7 @@ Mission::Mission(std::string name, Difficulty difficulty, const WeatherForecast&
         map_.ignite(fire);
     }
 }
-Mission::Mission(const Mission& other)
-    :name_{other.name_}, difficulty_{other.difficulty_}, weather_{other.weather_}, map_{other.map_}, dispatcher_{other.dispatcher_}, timeLimit_{other.timeLimit_}, elapsed_ {other.elapsed_} {}
+Mission::Mission(const Mission& other) = default;
 Mission& Mission::operator=(const Mission& other) {
     if (this != &other) {
         name_=other.name_;

@@ -52,7 +52,7 @@ Input readRecall(Mission& mission) {
         }
         try {
             mission.recall(tanker);
-            std::cout<<"Airplane"<<tanker<<"is returning to the base\n";
+            std::cout << "Aircraft " << tanker << " is returning to base\n";
         } catch (const std::logic_error& error) {
             std::cout << "Invalid command: " << error.what() << '\n';
         }

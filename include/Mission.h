@@ -16,7 +16,7 @@ class Mission {
 public:
     enum class Status{InProgress, Won, Lost};
     enum class Difficulty{Easy, Medium, Hard};
-    Mission(std::string name, Difficulty difficulty, const WeatherForecast& weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
+    Mission(std::string name, Difficulty difficulty, WeatherForecast weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit);
     Mission(const Mission& other);
     Mission& operator=(const Mission& other);
     ~Mission();
