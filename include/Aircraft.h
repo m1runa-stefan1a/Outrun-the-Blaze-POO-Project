@@ -17,10 +17,10 @@ public:
     virtual std::unique_ptr<Aircraft> clone() const = 0;
 
     void sendTo(const HexCoord& destination);
-    void returnTobase();
+    void returnToBase();
     void advance(const WindConditions& wind);
     void workOnStation(ForestMap& map, int refillPerStep, int dropPerStep);
-    void isCrashed() const;
+    bool isCrashed() const;
     void describe(std::ostream& os) const;
     void reportWindRisk( const WindConditions& wind, std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const Aircraft& aircraft);
@@ -38,7 +38,7 @@ private:
     bool canFlyIn(const WindConditions& wind) const;
     bool hasArrived() const;
     bool isOnStation() const;
-    bool isAirborn() const;
+    bool isAirborne() const;
     bool isAtBase() const;
     void requireNotCrashed() const;
     void requireOnStation(const char* action) const;

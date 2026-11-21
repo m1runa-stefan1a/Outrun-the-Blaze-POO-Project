@@ -75,6 +75,7 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/WindConditions.cpp
         src/AirTanker.cpp
         src/Aircraft.cpp
+        src/WaterScooper.cpp
         src/WildfireSector.cpp
         src/ForestMap.cpp
         src/AirOpsDispatcher.cpp
