@@ -3,7 +3,7 @@
 #include <utility>
 #include <algorithm>
 
-AirOpsDispatcher::AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerStep, int dropPerStep)
+AirOpsDispatcher::AirOpsDispatcher(std::vector<std::unique_ptr<Aircraft>> fleet, int refillPerStep, int dropPerStep)
         : fleet_{std::move(fleet)}, refillPerStep_{refillPerStep}, dropPerStep_{dropPerStep} {
         if (fleet_.empty()) {
             throw std::invalid_argument("AirOpsDispatcher::AirOpsDispatcher: fleet can't be empty");
@@ -12,29 +12,40 @@ AirOpsDispatcher::AirOpsDispatcher(std::vector<AirTanker> fleet, int refillPerSt
             throw std::invalid_argument("AirOpsDispatcher:: flow rate must be greater than zero");
         }
 }
-
-void AirOpsDispatcher::dispatch(std::size_t tankerIndex, const HexCoord& target, const ForestMap& map) {
-    if (!map.contains(target)) {
-        throw std::out_of_range("AirOpsDispatcher: target does not exist");    }
-    if (tankerIndex >= fleet_.size()) {
-        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
+AirOpsDispatcher::AirOpsDispatcher(const AirOpsDispatcher& other)
+    : refillPerStep_{other.refillPerStep_}, dropPerStep_{other.dropPerStep_} {
+    fleet_.reserve(other.fleet_.size());
+    for (const std::unique_ptr<Aircraft>& aircraft : other.fleet_) {
+        fleet_.push_back(aircraft->clone());
     }
-    fleet_[tankerIndex].sendTo(target);
 }
 
-void AirOpsDispatcher::recall(std::size_t tankerIndex) {
-    if (tankerIndex >= fleet_.size()) {
-        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
+AirOpsDispatcher& AirOpsDispatcher::operator=(AirOpsDispatcher other) {
+    swap(*this, other);
+    return *this;
+}
+
+void swap(AirOpsDispatcher& first, AirOpsDispatcher& second) noexcept {
+    using std::swap;
+    swap(first.fleet_, second.fleet_);
+    swap(first.refillPerStep_, second.refillPerStep_);
+    swap(first.dropPerStep_, second.dropPerStep_);
+}
+void AirOpsDispatcher::dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map) {
+    if (!map.contains(target)) {
+        throw std::out_of_range("AirOpsDispatcher: target does not exist");
     }
-    fleet_[tankerIndex].returnToBase();
+    aircraftAt(aircraftIndex).sendTo(target);
+}
+
+void AirOpsDispatcher::recall(std::size_t aircraftIndex) {
+    aircraftAt(aircraftIndex).returnToBase();
 }
 
 void AirOpsDispatcher::advance(const WindConditions& wind, ForestMap& map) {
-    for (AirTanker& tanker : fleet_) {
-        tanker.advance(wind);
-        if (tanker.isOnStation()) {
-            workOnStation(tanker, map);
-        }
+    for (const std::unique_ptr<Aircraft>& aircraft : fleet_) {
+        aircraft->advance(wind);
+        aircraft->workOnStation(map, refillPerStep_, dropPerStep_);
     }
 }
 std::size_t AirOpsDispatcher::fleetSize() const {
@@ -42,36 +53,31 @@ std::size_t AirOpsDispatcher::fleetSize() const {
 }
 int AirOpsDispatcher::crashedCount() const {
     return static_cast<int>(std::count_if(fleet_.begin(), fleet_.end(),
-        [](const AirTanker& tanker) { return tanker.isCrashed(); }));
+        [](const std::unique_ptr<Aircraft>& aircraft) { return aircraft->isCrashed(); }));
 }
 void AirOpsDispatcher::describeFleet(std::ostream& os) const {
     os << "=== FLEET STATUS ===";
     for (std::size_t i = 0; i < fleet_.size(); ++i) {
         os << "\n " << i << ". ";
-        fleet_[i].describe(os);
+        fleet_[i]->describe(os);
     }
 }
 void AirOpsDispatcher::reportWindRisks(const WindConditions& wind, std::ostream& os) const {
-    for (const AirTanker& tanker : fleet_) {
-        tanker.reportWindRisk(wind, os);
+    for (const std::unique_ptr<Aircraft>& aircraft : fleet_) {
+        aircraft->reportWindRisk(wind, os);
     }
 }
-void AirOpsDispatcher::workOnStation(AirTanker& tanker, ForestMap& map) const {
-    const HexCoord& where = tanker. position();
-    if (map.isLake(where)) {
-        if (!tanker.isTankFull()) {
-            tanker.refill(refillPerStep_);
-        }
+Aircraft& AirOpsDispatcher::aircraftAt(std::size_t aircraftIndex) {
+    if (aircraftIndex >= fleet_.size()) {
+        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
     }
-    else if (tanker.hasWater()&&map.isBurning(where)) {
-        const int dropped=tanker.dropWater(dropPerStep_);
-        map.douse(where, dropped);
-    }
+    return *fleet_[aircraftIndex];
 }
 std::ostream& operator<<(std::ostream& os, const AirOpsDispatcher& dispatcher) {
-    os<< "fleet("<< dispatcher.fleet_.size() << " aircraft): ";
+    os << "fleet(" << dispatcher.fleet_.size() << " aircraft): ";
     for (std::size_t i = 0; i < dispatcher.fleet_.size(); ++i) {
-        os << "\n "<<i<<". "<<dispatcher.fleet_[i];
+        os << "\n " << i << ". " << *dispatcher.fleet_[i];
     }
     return os;
+
 }

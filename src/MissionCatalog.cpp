@@ -1,10 +1,12 @@
 #include "MissionCatalog.h"
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <sstream>
 #include <stdexcept>
 
 #include <json/json.hpp>
+#include "WaterScooper.h"
  namespace {
      Direction directionFromText(const std::string& text) {
          for (const Direction direction : allDirections) {
@@ -32,13 +34,13 @@
          const ForestMap map{
              data.at("map").get<std::vector<std::string>>(),
              data.at("humidityPercent").get<int>()};
-         std::vector<AirTanker> fleet;
-         for (const nlohmann::json& tanker:data.at("tankers")) {
-             fleet.emplace_back(tanker.at("name").get<std::string>(), tanker.at("capacity").get<int>(),
-                                tanker.at("maxWindKmh").get<int>(),
-                                HexCoord{tanker.at("row").get<int>(), tanker.at("col").get<int>()});
+         std::vector<std::unique_ptr<Aircraft>> fleet;
+         for (const nlohmann::json& tanker : data.at("tankers")) {
+             fleet.push_back(std::make_unique<WaterScooper>(tanker.at("name").get<std::string>(),
+                             tanker.at("capacity").get<int>(), tanker.at("maxWindKmh").get<int>(),
+                             HexCoord{tanker.at("row").get<int>(), tanker.at("col").get<int>()}));
          }
-         const AirOpsDispatcher dispatcher{fleet, data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
+         AirOpsDispatcher dispatcher{std::move(fleet), data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
          const WindConditions wind{directionFromText(data.at("windDirection").get<std::string>()),data.at("windSpeedKmh").get<int>()};
          std::vector<WindChange> changes;
          for (const nlohmann::json& change : data.at("windChanges")) {

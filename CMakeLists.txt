@@ -73,7 +73,6 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/HexCoord.cpp
         src/WaterPayload.cpp
         src/WindConditions.cpp
-        src/AirTanker.cpp
         src/Aircraft.cpp
         src/WaterScooper.cpp
         src/WildfireSector.cpp
