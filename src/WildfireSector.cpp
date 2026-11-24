@@ -26,6 +26,10 @@ void WildfireSector::addHeat(int amount) {
     }
 }
 void WildfireSector::advanceFire() {
+    if (wetSteps_ > 0) {
+        --wetSteps_;
+        return;
+    }
     switch (state_) {
         case State::Intact:
             if (canIgnite()&&heat_>=ignitionHeat) {
@@ -58,6 +62,17 @@ void WildfireSector::douse(int liters) {
         heat_=0;
     }
 }
+
+void WildfireSector::soak(int steps) {
+    if (steps <= 0) {
+        throw std::invalid_argument("WildfireSector: soak steps must be greater than zero");
+    }
+    if (state_ == State::Intact && terrain_ !=Terrain::Lake) {
+        wetSteps_ = std::max(wetSteps_,steps);
+        heat_=0;
+    }
+}
+
 int WildfireSector::heatOutput(int humidityPercent) const {
     if (state_!=State::Burning) {
         return 0;
@@ -80,7 +95,7 @@ const HexCoord& WildfireSector::position() const {
     return position_;
 }
 bool WildfireSector::canIgnite() const {
-    return terrain_!=Terrain::Lake && state_ == State::Intact;
+        return terrain_!=Terrain::Lake && state_ == State::Intact && wetSteps_ == 0;
 }
 std::ostream& operator<<(std::ostream& os, const WildfireSector& sector) {
     switch (sector.state_) {
@@ -90,7 +105,7 @@ std::ostream& operator<<(std::ostream& os, const WildfireSector& sector) {
             switch (sector.terrain_) {
                 case WildfireSector::Terrain::Lake:os<<'~';break;
                 case WildfireSector::Terrain::Cabin:os<<'C';break;
-                case WildfireSector::Terrain::Forest:os<<'P';break;
+                case WildfireSector::Terrain::Forest:os<<(sector.wetSteps_ > 0 ? 'W' : 'P');break;
             }
             break;
     }

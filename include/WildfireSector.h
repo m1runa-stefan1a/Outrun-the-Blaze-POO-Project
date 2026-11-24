@@ -11,6 +11,7 @@ public:
     void addHeat(int amount);
     void advanceFire();
     void douse(int liters);
+    void soak(int steps);
     int heatOutput(int humidityPercent) const;
     bool isLost() const;
     bool isBurning() const;
@@ -26,5 +27,6 @@ private:
     State state_ = State::Intact;
     int heat_ = 0;
     int intensity_ = 0;
+    int wetSteps_ = 0;
 };
 #endif
