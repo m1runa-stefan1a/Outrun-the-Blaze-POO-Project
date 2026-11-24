@@ -1,6 +1,7 @@
 #include "Aircraft.h"
 #include <stdexcept>
 #include <utility>
+#include <string>
 
 namespace {
     constexpr int windWarningPercent = 80;
@@ -18,7 +19,7 @@ namespace {
     }
 }
 Aircraft::Aircraft(std::string name, int capacity, int maxWindKmh, const HexCoord& base)
-    : name_{std::move(name)}, payload_{capacity}, maxWindKmh_{maxWindKmh}, base_{base}, position_{base}, destination_{base} {
+    : name_{std::move(name) + "-" + std::to_string(++createdCount_)}, payload_{capacity}, maxWindKmh_{maxWindKmh}, base_{base}, position_{base}, destination_{base} {
     if (maxWindKmh_ <= 0) {
         throw std::invalid_argument{"maxWindKmh must be greater than zero"};
     }

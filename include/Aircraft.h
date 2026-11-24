@@ -42,6 +42,7 @@ private:
     bool isAtBase() const;
     void requireNotCrashed() const;
     void requireOnStation(const char* action) const;
+    inline static int createdCount_ = 0;
     std::string name_;
     WaterPayload payload_;
     int maxWindKmh_;
