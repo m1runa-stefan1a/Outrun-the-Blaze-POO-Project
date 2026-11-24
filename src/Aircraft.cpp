@@ -126,11 +126,11 @@ void Aircraft::requireNotCrashed() const {
         throw std::logic_error(name_ + " has crashed and no longer accepts commands");
     }
 }
-std::ostream& operator<< (std::ostream& os, const Aircraft& tanker) {
-    os << tanker.name_ << " [" << tanker.state_ << "] at " << tanker.position_;
-    if (!tanker.hasArrived() && !tanker.isCrashed()) {
-        os << " -> " << tanker.destination_;
+std::ostream& operator<< (std::ostream& os, const Aircraft& aircraft) {
+    os << aircraft.name_ << " [" << aircraft.state_ << "] at " << aircraft.position_;
+    if (!aircraft.hasArrived() && !aircraft.isCrashed()) {
+        os << " -> " << aircraft.destination_;
     }
-    os << ", tank " << tanker.payload_;
+    os << ", tank " << aircraft.payload_;
     return os;
 }
