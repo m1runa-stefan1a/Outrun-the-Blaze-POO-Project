@@ -60,7 +60,8 @@
       "tankers": [
         { "type": "scooper","name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
         { "type": "scooper","name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
-        { "type": "scooper","name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
+        { "type": "scooper","name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 },
+        { "type": "helicopter","name": "Hummer", "capacity": 2000, "maxWindKmh": 50, "row": 2, "col": 0 }
       ],
       "fires": [
         { "row": 1, "col": 5 },
