@@ -25,8 +25,8 @@
       "refillPerStep": 1500,
       "dropPerStep": 1000,
       "tankers": [
-        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 3, "col": 1 },
-        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 30, "row": 3, "col": 1 }
+        { "type": "scooper", "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 3, "col": 1 },
+        { "type": "scooper", "name": "Cabbie", "capacity": 1500, "maxWindKmh": 30, "row": 3, "col": 1 }
       ],
       "fires": [
         { "row": 2, "col": 5 }
@@ -58,9 +58,9 @@
       "refillPerStep": 1500,
       "dropPerStep": 1000,
       "tankers": [
-        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
-        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
-        { "name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
+        { "type": "scooper","name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
+        { "type": "scooper","name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
+        { "type": "scooper","name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
       ],
       "fires": [
         { "row": 1, "col": 5 },
@@ -93,9 +93,9 @@
       "refillPerStep": 1500,
       "dropPerStep": 1000,
       "tankers": [
-        { "name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
-        { "name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
-        { "name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
+        { "type": "scooper","name": "Dipper", "capacity": 3000, "maxWindKmh": 60, "row": 2, "col": 0 },
+        { "type": "scooper","name": "Cabbie", "capacity": 1500, "maxWindKmh": 45, "row": 2, "col": 0 },
+        { "type": "scooper","name": "Scooper", "capacity": 2500, "maxWindKmh": 55, "row": 5, "col": 11 }
       ],
       "fires": [
         { "row": 1, "col": 5 },
