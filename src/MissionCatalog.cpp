@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 #include <json/json.hpp>
-#include "WaterScooper.h"
+#include "AircraftFactory.h"
  namespace {
      Direction directionFromText(const std::string& text) {
          for (const Direction direction : allDirections) {
@@ -36,9 +36,7 @@
              data.at("humidityPercent").get<int>()};
          std::vector<std::unique_ptr<Aircraft>> fleet;
          for (const nlohmann::json& tanker : data.at("tankers")) {
-             fleet.push_back(std::make_unique<WaterScooper>(tanker.at("name").get<std::string>(),
-                             tanker.at("capacity").get<int>(), tanker.at("maxWindKmh").get<int>(),
-                             HexCoord{tanker.at("row").get<int>(), tanker.at("col").get<int>()}));
+             fleet.push_back(AircraftFactory::fromJson(tanker));
          }
          AirOpsDispatcher dispatcher{std::move(fleet), data.at("refillPerStep").get<int>(), data.at("dropPerStep").get<int>()};
          const WindConditions wind{directionFromText(data.at("windDirection").get<std::string>()),data.at("windSpeedKmh").get<int>()};

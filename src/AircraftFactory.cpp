@@ -1,0 +1,18 @@
+#include "AircraftFactory.h"
+#include <stdexcept>
+#include <string>
+#include <utility>
+
+#include "WaterScooper.h"
+
+std::unique_ptr<Aircraft> AircraftFactory::fromJson(const nlohmann::json &data) {
+    const std::string type = data.at("type").get<std::string>();
+    std::string name = data.at("name").get<std::string>();
+    const int capacity = data.at("capacity").get<int>();
+    const int maxWindKmh = data.at("maxWindKmh").get<int>();
+    const HexCoord base{data.at("row").get<int>(), data.at("col").get<int>()};
+    if (type == "scooper") {
+        return std::make_unique<WaterScooper>(std::move(name), capacity, maxWindKmh, base);
+    }
+    throw std::invalid_argument("unknown aircraft type"+ type);
+}
