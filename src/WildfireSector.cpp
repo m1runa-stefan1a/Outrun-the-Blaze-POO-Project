@@ -72,6 +72,14 @@ void WildfireSector::soak(int steps) {
         heat_=0;
     }
 }
+bool WildfireSector::applyRetardant() {
+    if (state_ != State::Intact || terrain_ == Terrain::Lake || hasRetardant_) {
+        return false;
+    }
+    hasRetardant_ = true;
+    heat_ = 0;
+    return true;
+}
 
 int WildfireSector::heatOutput(int humidityPercent) const {
     if (state_!=State::Burning) {
@@ -95,7 +103,7 @@ const HexCoord& WildfireSector::position() const {
     return position_;
 }
 bool WildfireSector::canIgnite() const {
-        return terrain_!=Terrain::Lake && state_ == State::Intact && wetSteps_ == 0;
+            return terrain_!=Terrain::Lake && state_ == State::Intact && wetSteps_ == 0 && !hasRetardant_;
 }
 std::ostream& operator<<(std::ostream& os, const WildfireSector& sector) {
     switch (sector.state_) {
@@ -105,7 +113,13 @@ std::ostream& operator<<(std::ostream& os, const WildfireSector& sector) {
             switch (sector.terrain_) {
                 case WildfireSector::Terrain::Lake:os<<'~';break;
                 case WildfireSector::Terrain::Cabin:os<<'C';break;
-                case WildfireSector::Terrain::Forest:os<<(sector.wetSteps_ > 0 ? 'W' : 'P');break;
+                case WildfireSector::Terrain::Forest:
+                    if (sector.hasRetardant_) {
+                        os << 'R';
+                    } else {
+                        os << (sector.wetSteps_ > 0 ? 'W' : 'P');
+                    }
+                    break;
             }
             break;
     }

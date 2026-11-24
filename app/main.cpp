@@ -87,7 +87,7 @@ void printHelp() {
               << "status                    show wind limits, bases and tanks of the whole fleet\n"
               << "help                      show this help\n"
               << "\n=== MAP SYMBOLS ===\n"
-              << "P forest   W wet forest   ~ lake   C cabin   * burning   # burned\n"
+              << "P forest   W wet forest   R retardant   ~ lake   C cabin   * burning   # burned\n"
               << "row numbers are on the left, column numbers on top\n"
               << "\n=== AIRCRAFT STATES ===\n"
               << "AtBase     safe at its base\n"

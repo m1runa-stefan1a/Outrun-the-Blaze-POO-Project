@@ -17,6 +17,7 @@ public:
     void spreadFire(const WindConditions& wind);
     void douse(const HexCoord& where, int liters);
     void soak(const HexCoord& where, int steps);
+    bool applyRetardant(const HexCoord& where);
     bool isLake(const HexCoord& where) const;
     bool isBurning(const HexCoord& where) const;
     bool hasActiveFire() const;

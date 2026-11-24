@@ -12,6 +12,7 @@ public:
     void advanceFire();
     void douse(int liters);
     void soak(int steps);
+    bool applyRetardant();
     int heatOutput(int humidityPercent) const;
     bool isLost() const;
     bool isBurning() const;
@@ -28,5 +29,6 @@ private:
     int heat_ = 0;
     int intensity_ = 0;
     int wetSteps_ = 0;
+    bool hasRetardant_ = false;
 };
 #endif

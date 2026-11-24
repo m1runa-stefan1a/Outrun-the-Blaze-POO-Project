@@ -81,6 +81,9 @@ void ForestMap::douse(const HexCoord& where, int liters) {
 void ForestMap::soak(const HexCoord& where, int steps) {
     sectors_[indexOf(where)].soak(steps);
 }
+bool ForestMap::applyRetardant(const HexCoord& where) {
+    return sectors_[indexOf(where)].applyRetardant();
+}
 
 bool ForestMap::isLake(const HexCoord& where) const {
     return sectors_[indexOf(where)].isLake();
