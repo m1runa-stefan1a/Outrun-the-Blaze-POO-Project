@@ -1,6 +1,6 @@
 #include "AirOpsDispatcher.h"
 #include "RetardantTanker.h"
-#include <stdexcept>
+#include "GameErrors.h"
 #include <utility>
 #include <algorithm>
 
@@ -34,7 +34,7 @@ void swap(AirOpsDispatcher& first, AirOpsDispatcher& second) noexcept {
 }
 void AirOpsDispatcher::dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map, std::ostream& os) {
     if (!map.contains(target)) {
-        throw std::out_of_range("AirOpsDispatcher: target does not exist");
+        throw CommandError{"this sector is not on the map"};
     }
     Aircraft& aircraft = aircraftAt(aircraftIndex);
     aircraft.sendTo(target);
@@ -74,7 +74,7 @@ void AirOpsDispatcher::reportWindRisks(const WindConditions& wind, std::ostream&
 }
 Aircraft& AirOpsDispatcher::aircraftAt(std::size_t aircraftIndex) {
     if (aircraftIndex >= fleet_.size()) {
-        throw std::out_of_range("AirOpsDispatcher: no aircraft with this number");
+        throw CommandError{"there is no aircraft number " + std::to_string(aircraftIndex)};
     }
     return *fleet_[aircraftIndex];
 }

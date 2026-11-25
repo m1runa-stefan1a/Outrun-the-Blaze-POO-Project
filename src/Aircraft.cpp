@@ -1,4 +1,5 @@
 #include "Aircraft.h"
+#include "GameErrors.h"
 #include <stdexcept>
 #include <utility>
 #include <string>
@@ -129,7 +130,7 @@ bool Aircraft::isAtBase() const {
 }
 void Aircraft::requireOnStation(const char* action) const {
     if (!isOnStation()) {
-    throw std::logic_error(name_ + " can't " + action + ": not above the target");
+        throw CommandError{name_ + " has crashed and no longer accepts commands"};
     }
 }
 void Aircraft::requireNotCrashed() const {

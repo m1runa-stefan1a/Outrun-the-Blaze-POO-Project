@@ -1,4 +1,5 @@
 #include "MissionCatalog.h"
+#include "GameErrors.h"
 #include <fstream>
 #include <memory>
 #include <optional>
@@ -16,7 +17,7 @@
                  return direction;
              }
          }
-         throw std::runtime_error("unknown wind direction: "+text);
+         throw DataFileError{"unknown wind direction '" + text + "'"};
      }
      Mission::Difficulty difficultyFromText(const std::string& text) {
          if (text == "easy") {
@@ -28,7 +29,7 @@
          if (text == "hard") {
              return Mission::Difficulty::Hard;
          }
-         throw std::runtime_error("unknown difficulty: "+text);
+         throw DataFileError{"unknown difficulty '" + text + "'"};
      }
      Mission parseMission(const nlohmann::json& data) {
          const ForestMap map{
@@ -60,14 +61,18 @@
 MissionCatalog::MissionCatalog(const std::string& path) {
      std::ifstream file{path};
      if (!file) {
-         throw std::runtime_error("cannot open file: "+path);
+         throw DataFileError{"cannot open " + path};
      }
-     const nlohmann::json data = nlohmann::json::parse(file);
-     for (const nlohmann::json& mission : data.at("missions")) {
-         missions_.push_back(parseMission(mission));
+     try {
+         const nlohmann::json data = nlohmann::json::parse(file);
+         for (const nlohmann::json& mission : data.at("missions")) {
+             missions_.push_back(parseMission(mission));
+         }
+     } catch (const nlohmann::json::exception& error) {
+         throw DataFileError{path + " is malformed: " + error.what()};
      }
      if (missions_.empty()) {
-         throw std::runtime_error("MissionCatalog: no missions in "+path);
+         throw DataFileError{"no missions in " + path};
      }
  }
 

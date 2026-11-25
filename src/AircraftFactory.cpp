@@ -1,5 +1,5 @@
 #include "AircraftFactory.h"
-#include <stdexcept>
+#include "GameErrors.h"
 #include <string>
 #include <utility>
 
@@ -22,5 +22,5 @@ std::unique_ptr<Aircraft> AircraftFactory::fromJson(const nlohmann::json &data) 
     if (type == "retardant") {
         return std::make_unique<RetardantTanker>(std::move(name), capacity, maxWindKmh, base);
     }
-    throw std::invalid_argument("unknown aircraft type"+ type);
+    throw DataFileError{"unknown aircraft type '" + type + "'"};
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include <optional>
 
+#include "GameErrors.h"
 #include "Mission.h"
 #include "MissionCatalog.h"
 #include "ScoreBoard.h"

@@ -1,6 +1,6 @@
 #include "ScoreBoard.h"
+#include "GameErrors.h"
 #include <fstream>
-#include <stdexcept>
 #include <utility>
 
 #include <json/json.hpp>
@@ -35,14 +35,14 @@ void ScoreBoard::load() {
     try {
         best_ = nlohmann::json::parse(file).get<std::map<std::string, int>>();
     } catch (const nlohmann::json::exception&) {
-        throw std::runtime_error("ScoreBoard: the scores file is corrupted: " + path_);
+        throw DataFileError{path_ + " is corrupted"};
     }
 }
 
 void ScoreBoard::save() const {
     std::ofstream file{path_};
     if (!file) {
-        throw std::runtime_error("ScoreBoard: cannot write the scores file: " + path_);
+        throw DataFileError{"cannot write the scores file" + path_};
     }
     const nlohmann::json data = best_;
     file << data.dump(2) << '\n';
