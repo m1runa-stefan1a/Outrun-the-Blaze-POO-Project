@@ -32,9 +32,11 @@ protected:
     bool isTankFull() const;
     void refill(int portion);
     int dropWater(int requested);
+    void reloadAtBase(int portion);
 private:
     virtual void doWorkOnStation(ForestMap& map, int refillPerStep, int dropPerStep)=0;
     virtual void printDetails(std::ostream& os) const =0;
+    virtual void doWorkAtBase(int refillPerStep);
     bool canFlyIn(const WindConditions& wind) const;
     bool hasArrived() const;
     bool isOnStation() const;

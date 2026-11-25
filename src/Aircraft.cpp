@@ -60,8 +60,11 @@ void Aircraft::advance(const WindConditions& wind) {
 void Aircraft::workOnStation(ForestMap& map, int refillPerStep, int dropPerStep) {
     if (isOnStation()) {
         doWorkOnStation(map, refillPerStep, dropPerStep);
+    } else if (state_ == State::AtBase) {
+        doWorkAtBase(refillPerStep);
     }
 }
+void Aircraft::doWorkAtBase(int /*refillPerStep*/) {}
 bool Aircraft::canFlyIn(const WindConditions& wind) const {
     return wind.speedKmh() <= maxWindKmh_;
 }
@@ -114,6 +117,13 @@ int Aircraft::dropWater(int requested) {
     state_ = State::Dropping;
     return payload_.release(requested);
 }
+void Aircraft::reloadAtBase(int portion) {
+    if (state_ != State::AtBase) {
+        throw std::logic_error(name_ + " can only reload at its base");
+    }
+    payload_.refill(portion);
+}
+
 bool Aircraft::isAtBase() const {
     return position_ == base_;
 }
