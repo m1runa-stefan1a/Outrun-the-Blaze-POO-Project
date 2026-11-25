@@ -18,7 +18,7 @@ public:
     AirOpsDispatcher& operator=(AirOpsDispatcher other);
     ~AirOpsDispatcher() = default;
     friend void swap(AirOpsDispatcher& first, AirOpsDispatcher& second) noexcept;
-    void dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map);
+    void dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map, std::ostream& os);
     void recall(std::size_t aircraftIndex);
     void advance(const WindConditions& wind, ForestMap& map);
     int crashedCount() const;

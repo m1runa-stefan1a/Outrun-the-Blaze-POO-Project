@@ -49,8 +49,8 @@ Mission& Mission::operator=(const Mission& other) {
 }
 Mission::~Mission() = default;
 
-void Mission::dispatch(std::size_t tankerIndex, const HexCoord &target) {
-    dispatcher_.dispatch(tankerIndex, target, map_);
+void Mission::dispatch(std::size_t tankerIndex, const HexCoord &target, std::ostream& os) {
+    dispatcher_.dispatch(tankerIndex, target, map_, os);
 }
 
 void Mission::recall(std::size_t tankerIndex) {

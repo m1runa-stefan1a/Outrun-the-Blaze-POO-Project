@@ -20,7 +20,7 @@ public:
     Mission(const Mission& other);
     Mission& operator=(const Mission& other);
     ~Mission();
-    void dispatch(std::size_t tankerIndex, const HexCoord& target);
+    void dispatch(std::size_t tankerIndex, const HexCoord& target, std::ostream& os);
     void recall(std::size_t tankerIndex);
     void advance();
     Status status() const;

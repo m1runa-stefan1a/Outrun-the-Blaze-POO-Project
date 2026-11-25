@@ -31,7 +31,7 @@ Input readDispatch(Mission& mission) {
     }
     const HexCoord target{row, col};
     try {
-        mission.dispatch(tanker, target);
+        mission.dispatch(tanker, target, std::cout);
         std::cout<<"Aircraft " << tanker << " heading to " << target << '\n';
     } catch (const std::logic_error& error) {
         std::cout << "Invalid command: " << error.what() << '\n';

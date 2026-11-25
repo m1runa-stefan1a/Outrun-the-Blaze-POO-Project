@@ -1,4 +1,5 @@
 #include "AirOpsDispatcher.h"
+#include "RetardantTanker.h"
 #include <stdexcept>
 #include <utility>
 #include <algorithm>
@@ -31,11 +32,15 @@ void swap(AirOpsDispatcher& first, AirOpsDispatcher& second) noexcept {
     swap(first.refillPerStep_, second.refillPerStep_);
     swap(first.dropPerStep_, second.dropPerStep_);
 }
-void AirOpsDispatcher::dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map) {
+void AirOpsDispatcher::dispatch(std::size_t aircraftIndex, const HexCoord& target, const ForestMap& map, std::ostream& os) {
     if (!map.contains(target)) {
         throw std::out_of_range("AirOpsDispatcher: target does not exist");
     }
-    aircraftAt(aircraftIndex).sendTo(target);
+    Aircraft& aircraft = aircraftAt(aircraftIndex);
+    aircraft.sendTo(target);
+    if (dynamic_cast<const RetardantTanker*>(&aircraft) != nullptr && map.isBurning(target)) {
+        os << "[DISPATCH] WARNING: retardant does not put out fires - drop it on the forest in front of the fire\n";
+    }
 }
 
 void AirOpsDispatcher::recall(std::size_t aircraftIndex) {
