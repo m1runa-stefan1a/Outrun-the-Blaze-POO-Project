@@ -143,5 +143,6 @@ std::ostream& operator<< (std::ostream& os, const Aircraft& aircraft) {
         os << " -> " << aircraft.destination_;
     }
     os << ", tank " << aircraft.payload_;
+    aircraft.printDetails(os);
     return os;
 }
