@@ -87,6 +87,7 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/ScoreBoard.cpp
         src/WeatherForecast.cpp
         src/WindChange.cpp
+        src/GameErrors.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
