@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "BucketHelicopter.h"
+#include "RetardantTanker.h"
 #include "WaterScooper.h"
 
 std::unique_ptr<Aircraft> AircraftFactory::fromJson(const nlohmann::json &data) {
@@ -17,6 +18,9 @@ std::unique_ptr<Aircraft> AircraftFactory::fromJson(const nlohmann::json &data) 
     }
     if (type == "helicopter") {
         return std::make_unique<BucketHelicopter>(std::move(name), capacity, maxWindKmh, base);
+    }
+    if (type == "retardant") {
+        return std::make_unique<RetardantTanker>(std::move(name), capacity, maxWindKmh, base);
     }
     throw std::invalid_argument("unknown aircraft type"+ type);
 }
