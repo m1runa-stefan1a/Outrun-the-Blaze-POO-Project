@@ -76,6 +76,7 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/Aircraft.cpp
         src/WaterScooper.cpp
         src/BucketHelicopter.cpp
+        src/RetardantTanker.cpp
         src/AircraftFactory.cpp
         src/WildfireSector.cpp
         src/ForestMap.cpp
