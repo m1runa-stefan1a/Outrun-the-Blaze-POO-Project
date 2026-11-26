@@ -42,7 +42,7 @@ void ScoreBoard::load() {
 void ScoreBoard::save() const {
     std::ofstream file{path_};
     if (!file) {
-        throw DataFileError{"cannot write the scores file" + path_};
+        throw DataFileError{"cannot write the scores file " + path_};
     }
     const nlohmann::json data = best_;
     file << data.dump(2) << '\n';

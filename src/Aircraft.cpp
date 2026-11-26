@@ -130,12 +130,12 @@ bool Aircraft::isAtBase() const {
 }
 void Aircraft::requireOnStation(const char* action) const {
     if (!isOnStation()) {
-        throw CommandError{name_ + " has crashed and no longer accepts commands"};
+        throw std::logic_error(name_ + " can't " + action + ": not above the target");
     }
 }
 void Aircraft::requireNotCrashed() const {
     if (state_ == State::Crashed) {
-        throw std::logic_error(name_ + " has crashed and no longer accepts commands");
+        throw CommandError{name_ + " has crashed and no longer accepts commands"};
     }
 }
 std::ostream& operator<< (std::ostream& os, const Aircraft& aircraft) {

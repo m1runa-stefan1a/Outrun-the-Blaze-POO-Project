@@ -34,7 +34,7 @@ Input readDispatch(Mission& mission) {
     try {
         mission.dispatch(tanker, target, std::cout);
         std::cout<<"Aircraft " << tanker << " heading to " << target << '\n';
-    } catch (const std::logic_error& error) {
+    } catch (const CommandError& error) {
         std::cout << "Invalid command: " << error.what() << '\n';
     }
     return Input::Available;
@@ -54,7 +54,7 @@ Input readRecall(Mission& mission) {
         try {
             mission.recall(tanker);
             std::cout << "Aircraft " << tanker << " is returning to base\n";
-        } catch (const std::logic_error& error) {
+        } catch (const CommandError& error) {
             std::cout << "Invalid command: " << error.what() << '\n';
         }
         return Input::Available;
