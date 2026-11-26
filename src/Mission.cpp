@@ -1,4 +1,5 @@
 #include "Mission.h"
+#include "GameErrors.h"
 #include <stdexcept>
 #include <utility>
 
@@ -25,10 +26,10 @@ namespace {
 Mission::Mission(std::string name, Difficulty difficulty, WeatherForecast weather, ForestMap map, AirOpsDispatcher dispatcher, const std::vector<HexCoord>& fires, int timeLimit)
     : name_{std::move(name)}, difficulty_{difficulty}, weather_{std::move(weather)}, map_{std::move(map)}, dispatcher_{std::move(dispatcher)}, timeLimit_{timeLimit} {
     if (timeLimit_ <= 0) {
-        throw std::invalid_argument("Mission:timeLimit must be greater than 0.");
+        throw InvalidSetupError{name_ + ": the time limit must be greater than 0"};
     }
     if (fires.empty()) {
-        throw std::invalid_argument("Mission:mission must have at least one fire");
+        throw InvalidSetupError{name_ + ": a mission needs at least one fire"};
     }
     for (const HexCoord& fire : fires) {
         map_.ignite(fire);

@@ -1,10 +1,11 @@
 #include "WaterPayload.h"
+#include "GameErrors.h"
 #include <algorithm>
 #include <stdexcept>
 
 WaterPayload::WaterPayload(int capacity) : capacity_(capacity) {
     if (capacity_ <= 0) {
-        throw std::invalid_argument("WaterPayload: capacity must be positive");
+        throw InvalidSetupError{"tank capacity must be greater than zero"};
     }
 }
 

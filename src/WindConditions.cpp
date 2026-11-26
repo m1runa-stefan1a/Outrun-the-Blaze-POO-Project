@@ -1,11 +1,10 @@
 #include "WindConditions.h"
-
-#include <stdexcept>
+#include "GameErrors.h"
 
 WindConditions::WindConditions(Direction blowsToward, int speedKmh)
     : blowsToward_{blowsToward}, speedKmh_{speedKmh} {
     if (speedKmh_ < 0 ) {
-        throw std::invalid_argument("WindConditions: invalid speed kmh");
+        throw InvalidSetupError{"wind speed can't be negative"};
     }
 }
 

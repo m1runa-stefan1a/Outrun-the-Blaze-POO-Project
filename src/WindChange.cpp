@@ -1,13 +1,13 @@
 #include "WindChange.h"
-#include<stdexcept>
+#include "GameErrors.h"
 
 WindChange::WindChange(int step, int speedKmh, std::optional<Direction> direction)
     : step_{step}, speedKmh_{speedKmh}, direction_{direction} {
     if (step_ <= 0) {
-        throw std::invalid_argument{"step must be greater than zero"};
+        throw InvalidSetupError{"a wind change must happen at a step greater than zero"};
     }
     if (speedKmh_ < 0) {
-        throw std::invalid_argument{"wind speed can't be negative"};
+        throw InvalidSetupError{"wind speed can't be negative"};
     }
 }
 

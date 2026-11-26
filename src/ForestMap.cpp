@@ -1,4 +1,5 @@
 #include "ForestMap.h"
+#include "GameErrors.h"
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
@@ -11,7 +12,7 @@ namespace {
             case 'L': return WildfireSector::Terrain::Lake;
             case 'C': return WildfireSector::Terrain::Cabin;
             default:
-                throw std::invalid_argument(std::string{"ForestMap: unknown terrain '"}+symbol+"'");
+                throw InvalidSetupError{std::string{"unknown terrain symbol '"} + symbol + "' on the map"};
         }
     }
 
@@ -31,15 +32,15 @@ ForestMap::ForestMap(const std::vector<std::string>& layout, int humidityPercent
     colCount_{layout.empty()?0:static_cast<int>(layout.front().size())},
     humidityPercent_{humidityPercent} {
     if (rowCount_ == 0 || colCount_ == 0) {
-        throw std::invalid_argument("ForestMap: empty map");
+        throw InvalidSetupError{"the map is empty"};
     }
     if (humidityPercent_ <0 || humidityPercent > 100) {
-        throw std::invalid_argument("ForestMap: humidity must be between 0 and 100");
+        throw InvalidSetupError{"humidity must be between 0 and 100"};
     }
     for (int row =0; row < rowCount_; ++row) {
         const std::string& line = layout[static_cast<std::size_t>(row)];
         if (static_cast<int>(line.size()) != colCount_) {
-            throw std::invalid_argument("ForestMap: invalid map layout");
+            throw InvalidSetupError{"all map rows must have the same length"};
         }
         for (int col = 0; col<colCount_; ++col) {
             sectors_.emplace_back(HexCoord{row, col}, terrainFromSymbol(line[static_cast<std::size_t>(col)]));

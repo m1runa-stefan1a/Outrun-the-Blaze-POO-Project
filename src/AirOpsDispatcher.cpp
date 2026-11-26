@@ -7,10 +7,10 @@
 AirOpsDispatcher::AirOpsDispatcher(std::vector<std::unique_ptr<Aircraft>> fleet, int refillPerStep, int dropPerStep)
         : fleet_{std::move(fleet)}, refillPerStep_{refillPerStep}, dropPerStep_{dropPerStep} {
         if (fleet_.empty()) {
-            throw std::invalid_argument("AirOpsDispatcher::AirOpsDispatcher: fleet can't be empty");
+            throw InvalidSetupError{"a mission needs at least one aircraft"};
         }
         if (refillPerStep_ <= 0 || dropPerStep_ <= 0) {
-            throw std::invalid_argument("AirOpsDispatcher:: flow rate must be greater than zero");
+            throw InvalidSetupError{"refill and drop rates must be greater than zero"};
         }
 }
 AirOpsDispatcher::AirOpsDispatcher(const AirOpsDispatcher& other)
