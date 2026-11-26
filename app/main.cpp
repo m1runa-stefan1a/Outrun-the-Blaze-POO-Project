@@ -31,12 +31,8 @@ Input readDispatch(Mission& mission) {
         return Input::Available;
     }
     const HexCoord target{row, col};
-    try {
-        mission.dispatch(tanker, target, std::cout);
-        std::cout<<"Aircraft " << tanker << " heading to " << target << '\n';
-    } catch (const CommandError& error) {
-        std::cout << "Invalid command: " << error.what() << '\n';
-    }
+    mission.dispatch(tanker, target, std::cout);
+    std::cout<<"Aircraft " << tanker << " heading to " << target << '\n';
     return Input::Available;
 
 }
@@ -51,14 +47,10 @@ Input readRecall(Mission& mission) {
             std::cout<<"Format: recall <plane>\n";
             return Input::Available;
         }
-        try {
-            mission.recall(tanker);
-            std::cout << "Aircraft " << tanker << " is returning to base\n";
-        } catch (const CommandError& error) {
-            std::cout << "Invalid command: " << error.what() << '\n';
-        }
-        return Input::Available;
-    }
+    mission.recall(tanker);
+    std::cout << "Aircraft " << tanker << " is returning to base\n";
+    return Input::Available;
+}
 Input readWait(Mission& mission) {
     int steps = 0;
     if (!(std::cin >> steps)) {
@@ -113,20 +105,24 @@ Input play(Mission& mission, ScoreBoard& scores) {
             return Input::Ended;
         }
         Input input=Input::Available;
-        if (command == "send") {
-            input=readDispatch(mission);
-        } else if (command == "wait") {
-            input=readWait(mission);
-        } else if (command == "status") {
-            mission.describeStatus(std::cout);
-            std::cout << '\n';
-        } else if (command == "help") {
-            printHelp();
-        } else if (command == "recall") {
-            input=readRecall(mission);
-        }else {
-            skipLine();
-            std::cout<<"unknown command\n"<<command<<'\n';
+        try {
+            if (command == "send") {
+                input=readDispatch(mission);
+            } else if (command == "wait") {
+                input=readWait(mission);
+            } else if (command == "status") {
+                mission.describeStatus(std::cout);
+                std::cout << '\n';
+            } else if (command == "help") {
+                printHelp();
+            } else if (command == "recall") {
+                input=readRecall(mission);
+            }else {
+                skipLine();
+                std::cout<<"unknown command\n"<<command<<'\n';
+            }
+        } catch (const CommandError& error) {
+            std::cout << "Invalid command: " << error.what() << '\n';
         }
         if (input == Input::Ended) {
             return Input::Ended;
@@ -207,6 +203,9 @@ int main() {
     } catch (const InvalidSetupError& error) {
         std::cout << "Error: " << error.what() << '\n'
                   << "fix the values in assets/missions.json\n";
+        return 1;
+    } catch (const GameError& error) {
+        std::cout << "Game error: " << error.what() << '\n';
         return 1;
     } catch (const std::exception& error) {
         std::cout << "Unexpected error: " << error.what() << '\n';
