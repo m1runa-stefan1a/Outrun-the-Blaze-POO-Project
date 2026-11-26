@@ -200,8 +200,16 @@ int main() {
                 attempt = initial;
             }
         }
+    } catch (const DataFileError& error) {
+        std::cout << "Error: " << error.what() << '\n'
+                  << "check that the assets folder is next to the game and the files are valid JSON\n";
+        return 1;
+    } catch (const InvalidSetupError& error) {
+        std::cout << "Error: " << error.what() << '\n'
+                  << "fix the values in assets/missions.json\n";
+        return 1;
     } catch (const std::exception& error) {
-        std::cout << "Error: " << error.what() << '\n';
+        std::cout << "Unexpected error: " << error.what() << '\n';
         return 1;
     }
     std::cout<<"End.\n";
