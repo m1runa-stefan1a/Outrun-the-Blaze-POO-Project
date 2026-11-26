@@ -11,14 +11,14 @@ WaterPayload::WaterPayload(int capacity) : capacity_(capacity) {
 
 void WaterPayload::refill(int portion) {
     if (portion < 0) {
-        throw std::invalid_argument("WaterPayload: portion must be non-negative");
+        throw SimulationError{"refill portion can't be negative"};
     }
     current_ = std::min(capacity_, current_ + portion);
 }
 
 int WaterPayload::release(int requested) {
     if (requested < 0) {
-        throw std::invalid_argument("WaterPayload: quantity must be non-negative");
+        throw SimulationError{"released quantity can't be negative"};
     }
     const int released = std::min(requested, current_);
     current_ -= released;

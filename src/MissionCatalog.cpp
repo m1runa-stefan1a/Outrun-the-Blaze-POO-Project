@@ -82,7 +82,7 @@ std::size_t MissionCatalog::size() const {
 
 const Mission& MissionCatalog::at(std::size_t index) const {
      if (index >= missions_.size()) {
-         throw std::out_of_range("MissionCatalog: no mission with this number");
+         throw SimulationError{"no mission with this number"};
      }
      return missions_[index];
  }

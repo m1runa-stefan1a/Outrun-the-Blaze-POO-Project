@@ -60,7 +60,7 @@ void Mission::recall(std::size_t tankerIndex) {
 
 void Mission::advance() {
     if (status()!= Status::InProgress) {
-        throw std::logic_error("Mission: mission ended");
+        throw SimulationError{name_ + ": the mission has already ended"};
     }
     weather_.update(elapsed_ + 1);
     dispatcher_.advance(weather_.current(), map_);
@@ -81,7 +81,7 @@ Mission::Status Mission::status() const {
 MissionReport Mission::report() const {
     const Status result = status();
     if (result == Status::InProgress) {
-        throw std::logic_error("Mission: the report is available only after the mission ends");
+        throw SimulationError{name_ + ": the report is available only after the mission ends"};
     }
     return MissionReport{name_, result == Status::Won, map_.lostCount(),dispatcher_.crashedCount(), timeLimit_ - elapsed_};
 }

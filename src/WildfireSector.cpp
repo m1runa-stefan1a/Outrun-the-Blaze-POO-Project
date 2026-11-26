@@ -1,4 +1,5 @@
 #include "WildfireSector.h"
+#include "GameErrors.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -13,7 +14,7 @@ WildfireSector::WildfireSector(const HexCoord& position, Terrain terrain)
     :position_{position}, terrain_{terrain}{}
 void WildfireSector::ignite() {
     if (terrain_==Terrain::Lake) {
-        throw std::logic_error("WildfireSector: a lake can't ignite");
+        throw SimulationError{"a lake can't ignite"};
     }
     if (canIgnite()) {
         state_=State::Burning;
@@ -50,7 +51,7 @@ void WildfireSector::advanceFire() {
 }
 void WildfireSector::douse(int liters) {
     if (liters<0) {
-        throw std::invalid_argument("WildfireSector: quantity must be non-negative");
+        throw SimulationError{"water quantity can't be negative"};
     }
     if (state_!=State::Burning) {
         return;
@@ -65,7 +66,7 @@ void WildfireSector::douse(int liters) {
 
 void WildfireSector::soak(int steps) {
     if (steps <= 0) {
-        throw std::invalid_argument("WildfireSector: soak steps must be greater than zero");
+        throw SimulationError{"soak steps must be greater than zero"};
     }
     if (state_ == State::Intact && terrain_ !=Terrain::Lake) {
         wetSteps_ = std::max(wetSteps_,steps);

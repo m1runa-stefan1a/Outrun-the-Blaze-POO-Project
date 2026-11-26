@@ -1,4 +1,5 @@
 #include "MissionReport.h"
+#include "GameErrors.h"
 #include <algorithm>
 #include <stdexcept>
 #include <utility>
@@ -13,7 +14,7 @@ namespace {
 MissionReport::MissionReport(std::string missionName, bool won, int burnedSectors, int crashedTankers, int remainingSteps)
     :missionName_{std::move(missionName)}, won_{won}, burnedSectors_{burnedSectors}, crashedTankers_{crashedTankers}, remainingSteps_{remainingSteps} {
     if (burnedSectors_ < 0 || crashedTankers_ < 0 || remainingSteps_ < 0) {
-        throw std::invalid_argument("MissionReport: counts can't be negative");
+        throw SimulationError{"report counts can't be negative"};
     }
 }
  int MissionReport::score() const {

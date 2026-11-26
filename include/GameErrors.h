@@ -24,4 +24,8 @@ public:
     explicit CommandError(const std::string& reason);
 };
 
+class SimulationError : public GameError {
+public:
+    explicit SimulationError(const std::string& problem);
+};
 #endif

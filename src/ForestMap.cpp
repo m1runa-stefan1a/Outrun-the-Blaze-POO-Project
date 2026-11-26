@@ -137,7 +137,7 @@ bool ForestMap::isCabinThreatened() const {
 
 std::size_t ForestMap::indexOf(const HexCoord& where) const {
     if (!contains(where)) {
-        throw std::out_of_range("ForestMap: position is not on the map");
+        throw SimulationError{"position is not on the map"};
     }
     return where.indexIn(colCount_);
 }

@@ -11,3 +11,6 @@ InvalidSetupError::InvalidSetupError(const std::string& problem)
 
 CommandError::CommandError(const std::string& reason)
     : GameError{reason} {}
+
+SimulationError::SimulationError(const std::string& problem)
+    : GameError{"simulation error: " + problem }{}

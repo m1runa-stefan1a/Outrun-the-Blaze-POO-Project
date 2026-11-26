@@ -120,7 +120,7 @@ int Aircraft::dropWater(int requested) {
 }
 void Aircraft::reloadAtBase(int portion) {
     if (state_ != State::AtBase) {
-        throw std::logic_error(name_ + " can only reload at its base");
+        throw SimulationError{name_ + " can only reload at its base"};
     }
     payload_.refill(portion);
 }
@@ -130,7 +130,7 @@ bool Aircraft::isAtBase() const {
 }
 void Aircraft::requireOnStation(const char* action) const {
     if (!isOnStation()) {
-        throw std::logic_error(name_ + " can't " + action + ": not above the target");
+        throw SimulationError{name_ + " can't " + action + ": not above the target"};
     }
 }
 void Aircraft::requireNotCrashed() const {
